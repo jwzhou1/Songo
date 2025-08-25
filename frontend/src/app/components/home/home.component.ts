@@ -30,18 +30,18 @@ import { MatIconModule } from '@angular/material/icon';
                 all in one place. Get the best shipping rates for your business.
               </p>
               <div class="d-flex gap-3 fade-in">
-                <button mat-raised-button 
-                        color="accent" 
+                <button mat-raised-button
+                        color="accent"
                         size="large"
-                        routerLink="/quote"
+                        routerLink="/get-quote"
                         class="btn-custom">
                   <mat-icon>calculate</mat-icon>
                   Get Quote
                 </button>
-                <button mat-stroked-button 
+                <button mat-stroked-button
                         color="accent"
                         size="large"
-                        routerLink="/track"
+                        routerLink="/tracking"
                         class="btn-custom text-white border-white">
                   <mat-icon>search</mat-icon>
                   Track Package
@@ -125,10 +125,10 @@ import { MatIconModule } from '@angular/material/icon';
                         class="btn-custom">
                   Get Started Free
                 </button>
-                <button mat-stroked-button 
+                <button mat-stroked-button
                         color="accent"
                         size="large"
-                        routerLink="/quote"
+                        routerLink="/get-quote"
                         class="btn-custom text-white border-white">
                   Get Quote Now
                 </button>

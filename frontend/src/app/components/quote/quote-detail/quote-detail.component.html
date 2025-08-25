@@ -1,0 +1,181 @@
+<div class="quote-detail-container">
+  <!-- Header -->
+  <div class="header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Quote Details</h1>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading quote details...</p>
+  </div>
+
+  <!-- Quote Details -->
+  <div *ngIf="!loading && quote" class="quote-content">
+    
+    <!-- Quote Header Card -->
+    <mat-card class="quote-header-card">
+      <mat-card-header>
+        <div mat-card-avatar class="quote-avatar">
+          <mat-icon>{{ getStatusIcon(quote.status) }}</mat-icon>
+        </div>
+        <mat-card-title>{{ quote.quoteNumber }}</mat-card-title>
+        <mat-card-subtitle>
+          <mat-chip [color]="getStatusColor(quote.status)" selected>
+            {{ quote.status }}
+          </mat-chip>
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="quote-summary">
+          <div class="summary-item" *ngIf="quote.estimatedPrice">
+            <span class="label">Estimated Price:</span>
+            <span class="value price">{{ formatPrice(quote.estimatedPrice) }}</span>
+          </div>
+          <div class="summary-item" *ngIf="quote.estimatedTransitDays">
+            <span class="label">Transit Time:</span>
+            <span class="value">{{ quote.estimatedTransitDays }} days</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Valid Until:</span>
+            <span class="value">{{ formatDate(quote.validUntil) }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions *ngIf="canAcceptOrReject()">
+        <button mat-raised-button color="primary" (click)="acceptQuote()">
+          <mat-icon>check</mat-icon>
+          Accept Quote
+        </button>
+        <button mat-button color="warn" (click)="rejectQuote()">
+          <mat-icon>close</mat-icon>
+          Reject Quote
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Route Information -->
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>route</mat-icon>
+          Route Information
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="route-section">
+          <div class="location-card origin">
+            <div class="location-header">
+              <mat-icon>location_on</mat-icon>
+              <h3>Origin</h3>
+            </div>
+            <div class="location-details">
+              <p>{{ quote.originAddress }}</p>
+              <p>{{ quote.originCity }}, {{ quote.originState }} {{ quote.originZip }}</p>
+              <p>{{ quote.originCountry }}</p>
+            </div>
+          </div>
+
+          <div class="route-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+
+          <div class="location-card destination">
+            <div class="location-header">
+              <mat-icon>flag</mat-icon>
+              <h3>Destination</h3>
+            </div>
+            <div class="location-details">
+              <p>{{ quote.destinationAddress }}</p>
+              <p>{{ quote.destinationCity }}, {{ quote.destinationState }} {{ quote.destinationZip }}</p>
+              <p>{{ quote.destinationCountry }}</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Shipment Details -->
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>inventory</mat-icon>
+          Shipment Details
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="details-grid">
+          <div class="detail-item">
+            <span class="label">Shipment Type:</span>
+            <span class="value">{{ quote.shipmentType }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Weight:</span>
+            <span class="value">{{ quote.weight }} {{ quote.weightUnit }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Package Count:</span>
+            <span class="value">{{ quote.packageCount }}</span>
+          </div>
+          <div class="detail-item" *ngIf="quote.dimensionsLength">
+            <span class="label">Dimensions:</span>
+            <span class="value">
+              {{ quote.dimensionsLength }} × {{ quote.dimensionsWidth }} × {{ quote.dimensionsHeight }} {{ quote.dimensionsUnit }}
+            </span>
+          </div>
+          <div class="detail-item" *ngIf="quote.cargoValue">
+            <span class="label">Cargo Value:</span>
+            <span class="value">{{ formatPrice(quote.cargoValue) }}</span>
+          </div>
+          <div class="detail-item" *ngIf="quote.cargoDescription">
+            <span class="label">Description:</span>
+            <span class="value">{{ quote.cargoDescription }}</span>
+          </div>
+        </div>
+        
+        <div *ngIf="quote.specialInstructions" class="special-instructions">
+          <h4>Special Instructions:</h4>
+          <p>{{ quote.specialInstructions }}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Quote Timeline -->
+    <mat-card class="info-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>schedule</mat-icon>
+          Quote Timeline
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-marker">
+              <mat-icon>add_circle</mat-icon>
+            </div>
+            <div class="timeline-content">
+              <h4>Quote Created</h4>
+              <p>{{ formatDate(quote.createdAt) }}</p>
+            </div>
+          </div>
+          
+          <div class="timeline-item" *ngIf="quote.updatedAt !== quote.createdAt">
+            <div class="timeline-marker">
+              <mat-icon>update</mat-icon>
+            </div>
+            <div class="timeline-content">
+              <h4>Last Updated</h4>
+              <p>{{ formatDate(quote.updatedAt) }}</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,212 @@
+<div class="quote-container">
+  <mat-card class="quote-card">
+    <mat-card-header>
+      <div mat-card-avatar class="quote-header-image">
+        <mat-icon>request_quote</mat-icon>
+      </div>
+      <mat-card-title>Get Shipping Quote</mat-card-title>
+      <mat-card-subtitle>
+        {{ isAuthenticated ? 'Create an official quote' : 'Get an instant estimate' }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="quoteForm" (ngSubmit)="onSubmit()" class="quote-form">
+        
+        <!-- Origin Section -->
+        <div class="section-header">
+          <mat-icon>location_on</mat-icon>
+          <h3>Origin</h3>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Address</mat-label>
+            <input matInput formControlName="originAddress" placeholder="Enter origin address">
+            <mat-error *ngIf="submitted && f['originAddress'].errors?.['required']">
+              Origin address is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>City</mat-label>
+            <input matInput formControlName="originCity" placeholder="City">
+            <mat-error *ngIf="submitted && f['originCity'].errors?.['required']">
+              City is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>State</mat-label>
+            <input matInput formControlName="originState" placeholder="State">
+            <mat-error *ngIf="submitted && f['originState'].errors?.['required']">
+              State is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>ZIP Code</mat-label>
+            <input matInput formControlName="originZip" placeholder="ZIP">
+            <mat-error *ngIf="submitted && f['originZip'].errors?.['required']">
+              ZIP code is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Destination Section -->
+        <div class="section-header">
+          <mat-icon>flag</mat-icon>
+          <h3>Destination</h3>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Address</mat-label>
+            <input matInput formControlName="destinationAddress" placeholder="Enter destination address">
+            <mat-error *ngIf="submitted && f['destinationAddress'].errors?.['required']">
+              Destination address is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>City</mat-label>
+            <input matInput formControlName="destinationCity" placeholder="City">
+            <mat-error *ngIf="submitted && f['destinationCity'].errors?.['required']">
+              City is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>State</mat-label>
+            <input matInput formControlName="destinationState" placeholder="State">
+            <mat-error *ngIf="submitted && f['destinationState'].errors?.['required']">
+              State is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>ZIP Code</mat-label>
+            <input matInput formControlName="destinationZip" placeholder="ZIP">
+            <mat-error *ngIf="submitted && f['destinationZip'].errors?.['required']">
+              ZIP code is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Shipment Details Section -->
+        <div class="section-header">
+          <mat-icon>inventory</mat-icon>
+          <h3>Shipment Details</h3>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Shipment Type</mat-label>
+            <mat-select formControlName="shipmentType">
+              <mat-option *ngFor="let type of shipmentTypes" [value]="type.value">
+                {{ type.label }} - {{ type.description }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="submitted && f['shipmentType'].errors?.['required']">
+              Shipment type is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>Weight</mat-label>
+            <input matInput type="number" formControlName="weight" placeholder="0">
+            <mat-error *ngIf="submitted && f['weight'].errors?.['required']">
+              Weight is required
+            </mat-error>
+            <mat-error *ngIf="submitted && f['weight'].errors?.['min']">
+              Weight must be greater than 0
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>Package Count</mat-label>
+            <input matInput type="number" formControlName="packageCount" placeholder="1">
+            <mat-error *ngIf="submitted && f['packageCount'].errors?.['required']">
+              Package count is required
+            </mat-error>
+            <mat-error *ngIf="submitted && f['packageCount'].errors?.['min']">
+              Package count must be at least 1
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Cargo Description (Optional)</mat-label>
+            <input matInput formControlName="cargoDescription" placeholder="Describe your cargo">
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Special Instructions (Optional)</mat-label>
+            <textarea matInput formControlName="specialInstructions" rows="3" 
+                     placeholder="Any special handling instructions"></textarea>
+          </mat-form-field>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="loading" class="submit-button">
+            <mat-spinner *ngIf="loading" diameter="20" class="button-spinner"></mat-spinner>
+            <span *ngIf="!loading">{{ isAuthenticated ? 'Create Quote' : 'Get Quick Quote' }}</span>
+            <span *ngIf="loading">Processing...</span>
+          </button>
+
+          <button mat-button type="button" (click)="resetForm()" [disabled]="loading" class="reset-button">
+            Reset Form
+          </button>
+        </div>
+      </form>
+
+      <!-- Quick Quote Result -->
+      <div *ngIf="quickQuoteResult" class="quick-quote-result">
+        <mat-divider></mat-divider>
+        <div class="result-header">
+          <mat-icon color="primary">check_circle</mat-icon>
+          <h3>Quick Quote Estimate</h3>
+        </div>
+        
+        <div class="result-content">
+          <div class="result-item">
+            <span class="label">Estimated Price:</span>
+            <span class="value price">${{ quickQuoteResult.estimatedPrice | number:'1.2-2' }}</span>
+          </div>
+          <div class="result-item">
+            <span class="label">Estimated Transit:</span>
+            <span class="value">{{ quickQuoteResult.estimatedTransitDays }} days</span>
+          </div>
+          <p class="result-message">{{ quickQuoteResult.message }}</p>
+        </div>
+
+        <div class="result-actions" *ngIf="!isAuthenticated">
+          <button mat-raised-button color="accent" (click)="goToRegister()">
+            Sign Up for Official Quote
+          </button>
+          <button mat-button (click)="goToLogin()">
+            Already have an account? Sign In
+          </button>
+        </div>
+
+        <div class="result-actions" *ngIf="isAuthenticated">
+          <button mat-raised-button color="accent" (click)="createOfficialQuote()">
+            Create Official Quote
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

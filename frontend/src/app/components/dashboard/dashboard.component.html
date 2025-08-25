@@ -1,0 +1,146 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="welcome-section">
+      <h1>Welcome back, {{ currentUser?.firstName }}!</h1>
+      <p>Manage your shipments and quotes from your dashboard</p>
+    </div>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="navigateToGetQuote()">
+        <mat-icon>add</mat-icon>
+        Get New Quote
+      </button>
+      <button mat-button (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading dashboard...</p>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!loading" class="dashboard-content">
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <mat-card class="stat-card total-quotes">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>request_quote</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h2>{{ quoteStats?.totalQuotes || 0 }}</h2>
+            <p>Total Quotes</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card pending-quotes">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>hourglass_empty</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h2>{{ quoteStats?.pendingQuotes || 0 }}</h2>
+            <p>Pending Quotes</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card quoted-quotes">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>check_circle</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h2>{{ quoteStats?.quotedQuotes || 0 }}</h2>
+            <p>Active Quotes</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card accepted-quotes">
+        <mat-card-content>
+          <div class="stat-icon">
+            <mat-icon>done_all</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h2>{{ quoteStats?.acceptedQuotes || 0 }}</h2>
+            <p>Accepted Quotes</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <h2>Quick Actions</h2>
+      <div class="actions-grid">
+        <mat-card class="action-card" (click)="navigateToGetQuote()">
+          <mat-card-content>
+            <mat-icon>add_circle</mat-icon>
+            <h3>Get New Quote</h3>
+            <p>Request a shipping quote for your cargo</p>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="action-card" (click)="navigateToQuotes()">
+          <mat-card-content>
+            <mat-icon>list_alt</mat-icon>
+            <h3>View Quotes</h3>
+            <p>Manage your existing quotes</p>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="action-card" (click)="navigateToTracking()">
+          <mat-card-content>
+            <mat-icon>local_shipping</mat-icon>
+            <h3>Track Shipments</h3>
+            <p>Track your shipments in real-time</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- User Info -->
+    <div class="user-info">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Account Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-row">
+            <span class="label">Name:</span>
+            <span class="value">{{ currentUser?.fullName }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Email:</span>
+            <span class="value">{{ currentUser?.email }}</span>
+          </div>
+          <div class="info-row" *ngIf="currentUser?.phone">
+            <span class="label">Phone:</span>
+            <span class="value">{{ currentUser?.phone }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Role:</span>
+            <span class="value">{{ currentUser?.role }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Email Verified:</span>
+            <span class="value">
+              <mat-icon [color]="currentUser?.emailVerified ? 'primary' : 'warn'">
+                {{ currentUser?.emailVerified ? 'check_circle' : 'cancel' }}
+              </mat-icon>
+              {{ currentUser?.emailVerified ? 'Yes' : 'No' }}
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
