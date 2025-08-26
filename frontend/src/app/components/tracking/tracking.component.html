@@ -5,7 +5,7 @@
         <mat-icon>local_shipping</mat-icon>
       </div>
       <mat-card-title>Track Your Shipment</mat-card-title>
-      <mat-card-subtitle>Enter your tracking number to get real-time updates</mat-card-subtitle>
+      <mat-card-subtitle>Enter your tracking number to get real-time updates with GPS tracking</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
@@ -26,9 +26,9 @@
         </mat-form-field>
 
         <div class="form-actions">
-          <button mat-raised-button 
-                  color="primary" 
-                  type="submit" 
+          <button mat-raised-button
+                  color="primary"
+                  type="submit"
                   class="track-button"
                   [disabled]="loading">
             <mat-spinner *ngIf="loading" diameter="20" class="button-spinner"></mat-spinner>
@@ -37,11 +37,20 @@
             <span *ngIf="loading">Tracking...</span>
           </button>
 
-          <button mat-button 
-                  type="button" 
-                  (click)="resetForm()" 
+          <button mat-button
+                  type="button"
+                  (click)="resetForm()"
                   [disabled]="loading">
             Reset
+          </button>
+
+          <button mat-button
+                  type="button"
+                  (click)="toggleRealTimeUpdates()"
+                  *ngIf="trackingResult"
+                  [color]="realTimeUpdates ? 'warn' : 'accent'">
+            <mat-icon>{{realTimeUpdates ? 'pause' : 'play_arrow'}}</mat-icon>
+            {{realTimeUpdates ? 'Stop' : 'Start'}} Real-time Updates
           </button>
         </div>
       </form>
@@ -51,6 +60,10 @@
         <div class="result-header">
           <mat-icon color="primary">check_circle</mat-icon>
           <h3>Tracking Information</h3>
+          <mat-chip *ngIf="realTimeUpdates" color="accent" selected>
+            <mat-icon>wifi</mat-icon>
+            Live Updates
+          </mat-chip>
         </div>
 
         <div class="shipment-summary">
@@ -71,30 +84,110 @@
           </div>
         </div>
 
-        <div class="tracking-timeline">
-          <h4>Tracking History</h4>
-          <div class="timeline">
-            <div *ngFor="let event of trackingResult.events; let i = index" 
-                 class="timeline-item"
-                 [ngClass]="{'active': i === trackingResult.events.length - 1}">
-              <div class="timeline-marker">
-                <mat-icon [color]="i === trackingResult.events.length - 1 ? 'primary' : ''">
-                  {{ getStatusIcon(event.status) }}
-                </mat-icon>
-              </div>
-              <div class="timeline-content">
-                <div class="event-header">
-                  <span class="event-status">{{ event.description }}</span>
-                  <span class="event-date">{{ event.date | date:'short' }}</span>
+        <!-- Tabbed Interface for Map and Timeline -->
+        <mat-tab-group class="tracking-tabs">
+          <!-- Map Tab -->
+          <mat-tab label="Live Map Tracking">
+            <div class="map-container">
+              <div #mapContainer class="google-map"></div>
+              <div class="map-legend" *ngIf="trackingRoute">
+                <div class="legend-item">
+                  <div class="legend-marker origin"></div>
+                  <span>Origin</span>
                 </div>
-                <div class="event-location">
-                  <mat-icon>location_on</mat-icon>
-                  {{ event.location }}
+                <div class="legend-item">
+                  <div class="legend-marker destination"></div>
+                  <span>Destination</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-marker current"></div>
+                  <span>Current Location</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-marker tracking"></div>
+                  <span>Tracking Points</span>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </mat-tab>
+
+          <!-- Timeline Tab -->
+          <mat-tab label="Tracking History">
+            <div class="tracking-timeline">
+              <h4>Tracking History</h4>
+              <div class="timeline">
+                <div *ngFor="let event of trackingResult.events; let i = index"
+                     class="timeline-item"
+                     [ngClass]="{'active': i === trackingResult.events.length - 1}">
+                  <div class="timeline-marker">
+                    <mat-icon [color]="i === trackingResult.events.length - 1 ? 'primary' : ''">
+                      {{ getStatusIcon(event.status) }}
+                    </mat-icon>
+                  </div>
+                  <div class="timeline-content">
+                    <div class="event-header">
+                      <span class="event-status">{{ event.statusDescription || event.description }}</span>
+                      <span class="event-date">{{ event.timestamp || event.date | date:'short' }}</span>
+                    </div>
+                    <div class="event-location">
+                      <mat-icon>location_on</mat-icon>
+                      {{ event.location?.city }}, {{ event.location?.state }} {{ event.location?.country }}
+                    </div>
+                    <div class="event-coordinates" *ngIf="event.location?.coordinates">
+                      <small>GPS: {{ event.location.coordinates.lat | number:'1.4-4' }}, {{ event.location.coordinates.lng | number:'1.4-4' }}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Details Tab -->
+          <mat-tab label="Shipment Details">
+            <div class="shipment-details" *ngIf="trackingResult.shipmentInfo">
+              <div class="detail-section">
+                <h4>Service Information</h4>
+                <div class="detail-grid">
+                  <div class="detail-item">
+                    <span class="label">Carrier:</span>
+                    <span class="value">{{ trackingResult.carrier }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <span class="label">Service:</span>
+                    <span class="value">{{ trackingResult.shipmentInfo.service }}</span>
+                  </div>
+                  <div class="detail-item" *ngIf="trackingResult.shipmentInfo.weight">
+                    <span class="label">Weight:</span>
+                    <span class="value">{{ trackingResult.shipmentInfo.weight }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="detail-section">
+                <h4>Route Information</h4>
+                <div class="route-info">
+                  <div class="route-point">
+                    <mat-icon color="primary">location_on</mat-icon>
+                    <div>
+                      <strong>Origin:</strong>
+                      <p>{{ trackingResult.shipmentInfo.origin }}</p>
+                    </div>
+                  </div>
+                  <div class="route-arrow">
+                    <mat-icon>arrow_downward</mat-icon>
+                  </div>
+                  <div class="route-point">
+                    <mat-icon color="accent">flag</mat-icon>
+                    <div>
+                      <strong>Destination:</strong>
+                      <p>{{ trackingResult.shipmentInfo.destination }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
 
         <div class="result-actions">
           <button mat-button (click)="resetForm()">
