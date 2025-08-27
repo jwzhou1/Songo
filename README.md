@@ -1,467 +1,432 @@
 # SonGo Enterprise Shipping Platform
 
-## 🚀 **Amazon-Ready Cloud-Native Shipping Management System**
+A comprehensive, enterprise-grade shipping and logistics management platform built with modern web technologies. This project demonstrates advanced full-stack development skills with real-time tracking, payment processing, and multi-carrier integration.
 
-A comprehensive, enterprise-grade shipping platform built with AWS cloud technologies, demonstrating scalable architecture, real-time tracking, and automated fulfillment capabilities - designed to showcase skills for Amazon's Fulfillment Technology & Robotics team.
+## 🚀 Live Demo
 
-## 🏗️ **Architecture Overview**
+- **Frontend**: http://localhost:3001
+- **Demo Account**:
+  - Email: `demo@songo-enterprise.com`
+  - Password: `demo123`
 
-### **Cloud-Native AWS Architecture**
+## 📋 Table of Contents
+
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Architecture](#architecture)
+- [Prerequisites](#prerequisites)
+- [Installation & Setup](#installation--setup)
+- [Environment Variables](#environment-variables)
+- [Running the Application](#running-the-application)
+- [API Documentation](#api-documentation)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Project Structure](#project-structure)
+- [Demo Features](#demo-features--test-data)
+- [License](#license)
+
+## ✨ Features
+
+### Core Functionality
+- **Multi-Carrier Integration** - FedEx, UPS, DHL, USPS, Canada Post, Canpar
+- **Real-time Package Tracking** - GPS-enabled tracking with interactive maps
+- **Intelligent Quote System** - Compare rates across multiple carriers
+- **Secure Payment Processing** - Stripe integration with PCI compliance
+- **User Authentication** - JWT-based auth with social login options
+- **Enterprise Dashboard** - Comprehensive analytics and reporting
+
+### Advanced Features
+- **Smart Carrier Detection** - Automatic carrier identification from tracking numbers
+- **Interactive Maps** - Google Maps integration for route visualization
+- **Document Generation** - PDF shipping labels and invoices
+- **Real-time Notifications** - WebSocket-based status updates
+- **Mobile Responsive** - Progressive Web App (PWA) capabilities
+- **Internationalization** - Multi-language and currency support
+
+## 🛠 Technology Stack
+
+### Frontend
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript 5.3
+- **UI Library**: Material-UI (MUI) 5.15
+- **Styling**: Emotion CSS-in-JS
+- **Animations**: Framer Motion 10.16
+- **State Management**: React Query (TanStack Query)
+- **Form Handling**: React Hook Form + Yup validation
+- **Maps**: Google Maps JavaScript API
+- **Charts**: Recharts 2.8
+- **Testing**: Jest + React Testing Library
+
+### Backend & APIs
+- **Runtime**: Node.js 18+
+- **API Framework**: Next.js API Routes
+- **Serverless Functions**: AWS Lambda (via Vercel)
+- **Authentication**: JWT (JSON Web Tokens)
+- **Payment Processing**: Stripe API
+- **File Storage**: AWS S3 (for documents)
+- **Real-time**: Socket.IO
+
+### Database & Storage
+- **Primary Database**: PostgreSQL (Supabase)
+- **Caching**: Redis (Upstash)
+- **File Storage**: AWS S3
+- **Session Storage**: JWT + Local Storage
+- **Analytics**: Google Analytics 4
+
+### DevOps & Deployment
+- **Hosting**: Vercel (Frontend + API)
+- **Serverless**: AWS Lambda
+- **CI/CD**: GitHub Actions
+- **Monitoring**: Vercel Analytics
+- **Error Tracking**: Sentry
+- **Performance**: Lighthouse CI
+
+### External Integrations
+- **Payment**: Stripe Payment Intent API
+- **Shipping APIs**:
+  - FedEx Ship Manager API
+  - UPS Developer Kit
+  - DHL Express API
+  - USPS Web Tools
+- **Maps**: Google Maps Platform
+- **Email**: SendGrid API
+- **SMS**: Twilio API
+
+## 🏗 Architecture
+
 ```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Angular SPA   │────│   API Gateway    │────│   Lambda Functions│
-│   (Vercel)      │    │   (REST/WS)      │    │   (Serverless)    │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                │                        │
-                       ┌────────▼────────┐    ┌─────────▼─────────┐
-                       │   CloudFront    │    │   ECS Fargate     │
-                       │   (CDN)         │    │   (Containers)    │
-                       └─────────────────┘    └───────────────────┘
-                                                        │
-┌─────────────────┐    ┌──────────────────┐    ┌─────────▼─────────┐
-│   EventBridge   │────│   SNS/SQS        │────│   DynamoDB        │
-│   (Events)      │    │   (Messaging)    │    │   (Database)      │
-└─────────────────┘    └──────────────────┘    └───────────────────┘
-         │                       │                        │
-┌────────▼────────┐    ┌─────────▼─────────┐    ┌─────────▼─────────┐
-│   S3 Buckets    │    │   CloudWatch      │    │   Secrets Manager │
-│   (Storage)     │    │   (Monitoring)    │    │   (API Keys)      │
-└─────────────────┘    └───────────────────┘    └───────────────────┘
-```
-
-## 🎯 **Key Features**
-
-### **🔐 Enterprise Authentication & Authorization**
-- **Multi-factor Authentication** with AWS Cognito
-- **Role-based Access Control** (Customer, Admin, Super Admin)
-- **JWT token management** with automatic refresh
-- **OAuth integration** for social login
-
-### **📦 Real-Time Shipping & Logistics**
-- **Multi-carrier Integration**: FedEx, UPS, DHL, USPS, Canada Post
-- **Dynamic Rate Shopping** with real-time quotes
-- **Pallet & Parcel Support** with dimensional weight calculation
-- **Automated Label Generation** and tracking number assignment
-
-### **🗺️ Interactive Tracking & Monitoring**
-- **Real-time GPS tracking** with Google Maps integration
-- **Package trajectory visualization** with movement history
-- **Delivery notifications** via SNS/SMS/Email
-- **Predictive delivery analytics** using ML
-
-### **💳 Secure Payment Processing**
-- **Stripe Integration** for credit/debit card processing
-- **PCI DSS compliant** payment handling
-- **Multi-currency support** with real-time exchange rates
-- **Automated billing** and invoice generation
-
-### **🏭 Warehouse Management Integration**
-- **AWS-based inventory tracking** with DynamoDB
-- **Automated fulfillment workflows** using Step Functions
-- **Real-time stock monitoring** and alerts
-- **Integration with Amazon fulfillment centers**
-
-## 🛠️ **Technology Stack**
-
-### **Frontend (Angular 17+)**
-- **Angular Material** for enterprise UI components
-- **NgRx** for state management
-- **PWA capabilities** for mobile experience
-- **Real-time WebSocket** connections
-- **Google Maps API** for tracking visualization
-
-### **Backend Services**
-- **Node.js/TypeScript** Lambda functions
-- **Python** for data processing and ML
-- **Java Spring Boot** for core business logic
-- **GraphQL** for efficient data fetching
-
-### **AWS Cloud Services**
-- **Lambda**: Serverless compute for business logic
-- **Fargate/ECS**: Containerized microservices
-- **DynamoDB**: NoSQL database for scalability
-- **S3**: Document and image storage
-- **SNS/SQS**: Event-driven messaging
-- **EventBridge**: Event routing and processing
-- **API Gateway**: RESTful API management
-- **CloudWatch**: Monitoring and logging
-- **Secrets Manager**: Secure API key storage
-
-### **DevOps & CI/CD**
-- **Docker**: Containerization for all services
-- **Jenkins**: Automated CI/CD pipeline
-- **Terraform**: Infrastructure as Code
-- **GitHub Actions**: Automated testing and deployment
-
-## 📋 **Core Functionalities**
-
-### **1. Smart Quote Generation**
-```typescript
-// Real-time multi-carrier rate comparison
-const quoteRequest = {
-  origin: { address, city, state, zip, country },
-  destination: { address, city, state, zip, country },
-  packages: [{
-    type: 'PALLET' | 'PARCEL',
-    dimensions: { length, width, height, weight },
-    value: monetaryValue,
-    contents: description
-  }],
-  serviceLevel: 'GROUND' | 'EXPRESS' | 'OVERNIGHT'
-};
-
-const quotes = await getMultiCarrierQuotes(quoteRequest);
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Backend API   │    │   External APIs │
+│   (Next.js)     │◄──►│   (Serverless)  │◄──►│   (Carriers)    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Database      │    │   File Storage  │    │   Cache Layer   │
+│   (PostgreSQL)  │    │   (AWS S3)      │    │   (Redis)       │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-### **2. Real-Time Package Tracking**
-```typescript
-// Live tracking with GPS coordinates
-const trackingData = {
-  trackingNumber: string,
-  carrier: CarrierType,
-  currentLocation: { lat, lng, address },
-  status: TrackingStatus,
-  estimatedDelivery: Date,
-  events: TrackingEvent[]
-};
-```
+## 📋 Prerequisites
 
-### **3. Payment Processing**
-```typescript
-// Secure payment with Stripe
-const payment = await processPayment({
-  amount: totalCost,
-  currency: 'USD',
-  paymentMethod: stripePaymentMethod,
-  metadata: { shipmentId, customerId }
-});
-```
+Before running this application, ensure you have:
 
-## 🚀 **Complete Setup & Deployment Guide**
-
-### **Prerequisites**
-- **Node.js 18+** with npm/yarn
-- **Docker & Docker Compose** for containerization
-- **AWS CLI** configured with appropriate permissions
-- **Terraform** for infrastructure as code
-- **Jenkins** for CI/CD pipeline
-- **Angular CLI 17+** for frontend development
+- **Node.js** 18.0.0 or higher
+- **npm** or **yarn** package manager
 - **Git** for version control
+- **PostgreSQL** database (or Supabase account)
+- **Stripe** account for payment processing
+- **Google Cloud** account for Maps API
+- **AWS** account for S3 storage (optional)
 
-### **🔧 Local Development Setup**
+## 🚀 Installation & Setup
 
-#### **1. Clone Repository**
+### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/yourusername/songo-enterprise-shipping.git
 cd songo-enterprise-shipping
 ```
 
-#### **2. Environment Configuration**
+### 2. Install Dependencies
+
 ```bash
-# Copy environment templates
-cp .env.example .env
-cp frontend/.env.example frontend/.env
-cp backend-serverless/.env.example backend-serverless/.env
-
-# Configure your environment variables
-nano .env
-```
-
-**Required Environment Variables:**
-```bash
-# AWS Configuration
-AWS_REGION=us-east-1
-AWS_ACCESS_KEY_ID=your_access_key
-AWS_SECRET_ACCESS_KEY=your_secret_key
-
-# Stripe Configuration
-STRIPE_PUBLISHABLE_KEY=pk_test_your_publishable_key
-STRIPE_SECRET_KEY=sk_test_your_secret_key
-
-# Google Maps API
-GOOGLE_MAPS_API_KEY=your_google_maps_api_key
-
-# Carrier API Keys (stored in AWS Secrets Manager)
-FEDEX_API_KEY=your_fedex_api_key
-UPS_API_KEY=your_ups_api_key
-DHL_API_KEY=your_dhl_api_key
-USPS_API_KEY=your_usps_api_key
-
-# Database Configuration
-POSTGRES_USER=songo_user
-POSTGRES_PASSWORD=secure_password
-POSTGRES_DB=songo_enterprise
-
-# Redis Configuration
-REDIS_PASSWORD=redis_secure_password
-
-# Monitoring
-GRAFANA_PASSWORD=admin_password
-```
-
-#### **3. Install Dependencies**
-```bash
-# Install root dependencies
-npm install
-
 # Install frontend dependencies
-cd frontend
+cd vercel-app
 npm install
 
-# Install backend dependencies
+# Install backend dependencies (if using separate backend)
 cd ../backend-serverless
 npm install
-
-# Return to root
-cd ..
 ```
 
-#### **4. Start Local Development Environment**
+### 3. Database Setup
+
+#### Option A: Using Supabase (Recommended)
+1. Create a [Supabase](https://supabase.com) account
+2. Create a new project
+3. Copy the database URL and anon key
+
+#### Option B: Local PostgreSQL
+1. Install PostgreSQL locally
+2. Create a database named `songo_enterprise`
+3. Run the SQL schema from `database/schema.sql`
+
+### 4. Configure Environment Variables
+
+Create `.env.local` in the `vercel-app` directory:
+
 ```bash
-# Start all services with Docker Compose
-docker-compose -f docker-compose.enterprise.yml up -d
-
-# Start frontend development server
-cd frontend
-npm start
-
-# In another terminal, start local AWS services
-cd ../
-npm run start:localstack
+cp .env.example .env.local
 ```
 
-**Access Points:**
-- **Frontend**: http://localhost:4200
-- **API Gateway**: http://localhost:3000
-- **LocalStack**: http://localhost:4566
-- **Grafana**: http://localhost:3001
-- **Kibana**: http://localhost:5601
-- **Prometheus**: http://localhost:9090
+## 🔐 Environment Variables
 
-### **☁️ AWS Infrastructure Deployment**
+### Required Variables
 
-#### **1. Configure AWS Credentials**
-```bash
-aws configure
-# Enter your AWS Access Key ID, Secret Access Key, Region, and Output format
+```env
+# Database
+DATABASE_URL="postgresql://username:password@localhost:5432/songo_enterprise"
+SUPABASE_URL="https://your-project.supabase.co"
+SUPABASE_ANON_KEY="your-supabase-anon-key"
+
+# Authentication
+JWT_SECRET="your-super-secret-jwt-key-min-32-chars"
+NEXTAUTH_SECRET="your-nextauth-secret"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Payment Processing
+STRIPE_PUBLISHABLE_KEY="pk_test_your_stripe_publishable_key"
+STRIPE_SECRET_KEY="sk_test_your_stripe_secret_key"
+STRIPE_WEBHOOK_SECRET="whsec_your_webhook_secret"
+
+# Google Services
+GOOGLE_MAPS_API_KEY="your-google-maps-api-key"
+GOOGLE_CLIENT_ID="your-google-oauth-client-id"
+GOOGLE_CLIENT_SECRET="your-google-oauth-client-secret"
+
+# Shipping APIs
+FEDEX_API_KEY="your-fedex-api-key"
+FEDEX_SECRET_KEY="your-fedex-secret-key"
+UPS_API_KEY="your-ups-api-key"
+DHL_API_KEY="your-dhl-api-key"
+USPS_API_KEY="your-usps-api-key"
+
+# AWS (Optional)
+AWS_ACCESS_KEY_ID="your-aws-access-key"
+AWS_SECRET_ACCESS_KEY="your-aws-secret-key"
+AWS_S3_BUCKET="your-s3-bucket-name"
+AWS_REGION="us-east-1"
+
+# Email & SMS
+SENDGRID_API_KEY="your-sendgrid-api-key"
+TWILIO_ACCOUNT_SID="your-twilio-account-sid"
+TWILIO_AUTH_TOKEN="your-twilio-auth-token"
+
+# Application
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NEXT_PUBLIC_API_URL="http://localhost:3000/api"
+NODE_ENV="development"
 ```
 
-#### **2. Deploy Infrastructure with Terraform**
-```bash
-cd infrastructure/terraform
+### Optional Variables
 
-# Initialize Terraform
-terraform init
+```env
+# Analytics & Monitoring
+GOOGLE_ANALYTICS_ID="G-XXXXXXXXXX"
+SENTRY_DSN="your-sentry-dsn"
+VERCEL_ANALYTICS_ID="your-vercel-analytics-id"
 
-# Plan the deployment
-terraform plan -var="environment=production"
+# Redis Cache
+REDIS_URL="redis://localhost:6379"
+UPSTASH_REDIS_REST_URL="your-upstash-redis-url"
+UPSTASH_REDIS_REST_TOKEN="your-upstash-redis-token"
 
-# Apply the infrastructure
-terraform apply -var="environment=production"
-
-# Save outputs for later use
-terraform output -json > ../../aws-outputs.json
+# Social Authentication
+FACEBOOK_CLIENT_ID="your-facebook-client-id"
+FACEBOOK_CLIENT_SECRET="your-facebook-client-secret"
+MICROSOFT_CLIENT_ID="your-microsoft-client-id"
+MICROSOFT_CLIENT_SECRET="your-microsoft-client-secret"
 ```
 
-#### **3. Configure Secrets in AWS Secrets Manager**
+## 🏃‍♂️ Running the Application
+
+### Development Mode
+
 ```bash
-# Store Stripe keys
-aws secretsmanager create-secret \
-    --name "songo-enterprise/stripe" \
-    --description "Stripe payment processing keys" \
-    --secret-string '{"secretKey":"sk_live_your_secret_key","publishableKey":"pk_live_your_publishable_key"}'
-
-# Store carrier API keys
-aws secretsmanager create-secret \
-    --name "songo-enterprise/carrier-apis" \
-    --description "Shipping carrier API keys" \
-    --secret-string '{"fedex":{"apiKey":"your_key","secretKey":"your_secret"},"ups":{"apiKey":"your_key","secretKey":"your_secret"},"dhl":{"apiKey":"your_key"},"usps":{"userId":"your_user_id"}}'
-
-# Store Google Maps API key
-aws secretsmanager create-secret \
-    --name "songo-enterprise/google-maps" \
-    --description "Google Maps API key" \
-    --secret-string '{"apiKey":"your_google_maps_api_key"}'
+# Start the development server
+cd vercel-app
+npm run dev
 ```
 
-### **🚀 Production Deployment**
+The application will be available at:
+- **Frontend**: http://localhost:3000 (or 3001 if 3000 is in use)
+- **API**: http://localhost:3000/api
 
-#### **Option 1: Jenkins CI/CD Pipeline (Recommended)**
+### Production Build
+
 ```bash
-# Push to main branch triggers automated deployment
-git add .
-git commit -m "Deploy to production"
-git push origin main
-
-# Monitor deployment in Jenkins
-# URL: http://your-jenkins-server:8080/job/songo-enterprise-pipeline/
-```
-
-#### **Option 2: Manual Deployment**
-
-**Deploy Lambda Functions:**
-```bash
-cd backend-serverless
-
-# Build and package functions
+# Build the application
 npm run build
-npm run package
 
-# Deploy quote service
-aws lambda update-function-code \
-    --function-name songo-enterprise-quote-service \
-    --zip-file fileb://dist/packages/quote-service.zip
-
-# Deploy tracking service
-aws lambda update-function-code \
-    --function-name songo-enterprise-tracking-service \
-    --zip-file fileb://dist/packages/tracking-service.zip
-
-# Deploy payment service
-aws lambda update-function-code \
-    --function-name songo-enterprise-payment-service \
-    --zip-file fileb://dist/packages/payment-service.zip
+# Start production server
+npm start
 ```
 
-**Deploy Frontend to Vercel:**
+### Testing
+
 ```bash
-cd frontend
+# Run all tests
+npm test
 
-# Install Vercel CLI
-npm install -g vercel
+# Run tests in watch mode
+npm run test:watch
 
-# Deploy to production
-vercel --prod
-
-# Configure environment variables in Vercel dashboard
-# - NEXT_PUBLIC_API_URL
-# - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-# - NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+# Generate coverage report
+npm run test:coverage
 ```
 
-### **🐳 Docker Deployment (Alternative)**
+### Code Quality
+
 ```bash
-# Build and deploy with Docker Compose
-docker-compose -f docker-compose.enterprise.yml up -d --build
+# Lint code
+npm run lint
 
-# Scale services as needed
-docker-compose -f docker-compose.enterprise.yml up -d --scale api-gateway=3 --scale job-processor=2
+# Fix linting issues
+npm run lint:fix
 
-# Monitor services
-docker-compose -f docker-compose.enterprise.yml logs -f
+# Type checking
+npm run type-check
+
+# Format code
+npm run format
 ```
 
-## 📊 **Monitoring & Analytics**
+## 📚 API Documentation
 
-### **CloudWatch Dashboards**
-- **System Performance**: Lambda execution times, error rates
-- **Business Metrics**: Quote conversion rates, shipping volumes
-- **User Analytics**: Active users, feature usage patterns
+### Authentication Endpoints
 
-### **Real-Time Alerts**
-- **System Health**: Automated alerts for service failures
-- **Business KPIs**: Notifications for unusual shipping patterns
-- **Security**: Alerts for suspicious activities
+```
+POST /api/auth/login          # User login
+POST /api/auth/register       # User registration
+POST /api/auth/logout         # User logout
+GET  /api/auth/me            # Get current user
+```
 
-## 🔒 **Security & Compliance**
+### Shipping Endpoints
 
-### **Data Protection**
-- **Encryption at rest** (DynamoDB, S3)
-- **Encryption in transit** (TLS 1.3)
-- **PCI DSS compliance** for payment processing
-- **GDPR compliance** for user data
+```
+POST /api/shipping/quotes     # Get shipping quotes
+POST /api/shipping/create     # Create shipment
+GET  /api/shipping/tracking/[id] # Track package
+```
 
-### **Access Control**
-- **IAM roles** with least privilege principle
-- **API rate limiting** and throttling
-- **Input validation** and sanitization
-- **Audit logging** for all operations
+### Payment Endpoints
 
-## 🎯 **Amazon Interview Highlights**
+```
+POST /api/payments/create-intent # Create payment intent
+POST /api/payments/confirm       # Confirm payment
+GET  /api/payments/history       # Payment history
+```
 
-This project demonstrates:
+## 🧪 Testing
 
-1. **Scalable Architecture**: Serverless and containerized microservices
-2. **AWS Expertise**: Comprehensive use of AWS services
-3. **Real-World Problem Solving**: Complex logistics and fulfillment challenges
-4. **DevOps Best Practices**: CI/CD, monitoring, and automation
-5. **Enterprise Security**: Compliance and data protection
-6. **Performance Optimization**: Caching, CDN, and efficient data structures
-7. **Event-Driven Design**: Asynchronous processing and messaging
-8. **Monitoring & Observability**: Comprehensive logging and metrics
+The project includes comprehensive testing:
 
-## 🚚 **How to Run the Complete Application**
+- **Unit Tests**: Component and utility function tests
+- **Integration Tests**: API endpoint testing
+- **E2E Tests**: Full user journey testing
+- **Performance Tests**: Load and stress testing
 
-### **Quick Start (5 minutes)**
 ```bash
-# 1. Clone and setup
-git clone https://github.com/yourusername/songo-enterprise-shipping.git
-cd songo-enterprise-shipping
-cp .env.example .env
-
-# 2. Start with Docker
-docker-compose -f docker-compose.enterprise.yml up -d
-
-# 3. Access the application
-open http://localhost:4200
+# Run specific test suites
+npm run test:unit
+npm run test:integration
+npm run test:e2e
 ```
 
-### **Full Development Setup (15 minutes)**
+## 🚀 Deployment
+
+### Vercel Deployment (Recommended)
+
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
+
 ```bash
-# 1. Install dependencies
-npm run install:all
+# Manual deployment
+npm run deploy
 
-# 2. Configure environment
-cp .env.example .env
-# Edit .env with your API keys
-
-# 3. Start services
-docker-compose -f docker-compose.enterprise.yml up -d
-cd frontend && npm start
-
-# 4. Initialize data
-npm run seed:data
+# Production deployment
+npm run deploy:prod
 ```
 
-### **Production Deployment (30 minutes)**
+### AWS Lambda Deployment
+
 ```bash
-# 1. Deploy infrastructure
-cd infrastructure/terraform
-terraform init && terraform apply
-
-# 2. Configure secrets
-npm run setup:secrets
-
-# 3. Deploy services
-git push origin main  # Triggers Jenkins pipeline
-
-# 4. Verify deployment
-npm run health:check
+# Deploy serverless functions
+cd backend-serverless
+serverless deploy
 ```
 
-## 📞 **Contact & Demo**
+## 📁 Project Structure
 
-**Live Demo**: https://songo-enterprise.vercel.app
-**API Documentation**: https://api.songo-enterprise.com/docs
-**Monitoring Dashboard**: https://monitoring.songo-enterprise.com
+```
+songo-enterprise-shipping/
+├── vercel-app/                 # Frontend application
+│   ├── src/
+│   │   ├── app/               # Next.js app router pages
+│   │   ├── components/        # Reusable UI components
+│   │   ├── contexts/          # React contexts
+│   │   ├── services/          # API service layers
+│   │   └── theme/             # MUI theme configuration
+│   ├── public/                # Static assets
+│   └── package.json
+├── backend-serverless/         # Serverless backend functions
+│   └── src/functions/         # Lambda functions
+├── database/                   # Database schemas and migrations
+├── docs/                      # Documentation
+└── README.md
+```
 
-**Your Name** - your.email@example.com
-**LinkedIn**: [Your LinkedIn Profile]
-**Portfolio**: [Your Portfolio Website]
+## 🎮 Demo Features & Test Data
+
+### Test Accounts
+- **Customer**: `demo@songo-enterprise.com` / `demo123`
+- **Admin**: `admin@songo-enterprise.com` / `admin123`
+
+### Test Payment Cards
+- **Success**: `4242 4242 4242 4242`
+- **Declined**: `4000 0000 0000 0002`
+- **Requires Authentication**: `4000 0025 0000 3155`
+
+### Test Tracking Numbers
+- **UPS**: `1Z999AA1234567890`
+- **FedEx**: `123456789012`
+- **Canpar**: `D420352470001072202001`
+- **DHL**: `1234567890`
+
+## 🔧 Key Features Walkthrough
+
+### 1. User Registration & Login
+1. Visit `/register` to create a new account
+2. Use `/login` with demo credentials
+3. Access `/dashboard` for user management
+
+### 2. Get Shipping Quote
+1. Navigate to `/get-quote`
+2. Enter pickup and delivery addresses
+3. Select package dimensions and weight
+4. Compare rates from multiple carriers
+
+### 3. Create Shipment & Payment
+1. Select preferred shipping option
+2. Proceed to `/checkout`
+3. Enter payment information (use test cards)
+4. Complete payment and get confirmation
+
+### 4. Track Package
+1. Visit `/tracking`
+2. Enter any test tracking number
+3. View real-time tracking with interactive map
+4. See delivery status and history
+
+### 5. User Dashboard
+1. Login and visit `/dashboard`
+2. View shipment history
+3. Check invoice history
+4. Manage profile settings
+
+## 🚫 Contributing
+
+This project is a demonstration of technical skills and is not open for contributions. It serves as a portfolio piece showcasing enterprise-level development capabilities.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-*Built with ❤️ for Amazon's Fulfillment Technology & Robotics team*
+**Note**: This is a demonstration project showcasing enterprise-level development skills. It is not intended for production use without proper security auditing and compliance verification.
 
-## 🏆 **Project Achievements**
-
-- ✅ **Real Carrier Integration** (FedEx, UPS, DHL, USPS)
-- ✅ **Live GPS Tracking** with Google Maps
-- ✅ **Secure Payment Processing** with Stripe
-- ✅ **AWS Cloud Architecture** (Lambda, DynamoDB, S3, SNS, SQS)
-- ✅ **Docker & Jenkins CI/CD**
-- ✅ **Enterprise Security & Compliance**
-- ✅ **Scalable Microservices Architecture**
-- ✅ **Real-time Monitoring & Analytics**
-- ✅ **Mobile-Responsive PWA**
-- ✅ **Production-Ready Deployment**
+**Built with ❤️ for demonstrating full-stack development expertise**
