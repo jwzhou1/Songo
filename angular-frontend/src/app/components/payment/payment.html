@@ -1,0 +1,275 @@
+<div class="payment-container">
+  <div class="payment-wrapper">
+    <!-- Payment Success State -->
+    <div class="success-state" *ngIf="paymentSuccess">
+      <mat-card class="success-card">
+        <mat-card-content>
+          <div class="success-content">
+            <div class="success-icon">
+              <mat-icon>check_circle</mat-icon>
+            </div>
+            <h2>Payment Successful!</h2>
+            <p>Your payment of <strong>${{ paymentData.amount | number:'1.2-2' }}</strong> has been processed successfully.</p>
+            <p>You will receive a confirmation email shortly.</p>
+            <div class="success-actions">
+              <button mat-raised-button color="primary" routerLink="/dashboard">
+                <mat-icon>dashboard</mat-icon>
+                Go to Dashboard
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Payment Processing State -->
+    <div class="processing-state" *ngIf="processing && !paymentSuccess">
+      <mat-card class="processing-card">
+        <mat-card-content>
+          <div class="processing-content">
+            <mat-spinner diameter="60"></mat-spinner>
+            <h2>Processing Payment...</h2>
+            <p>Please wait while we process your payment securely.</p>
+            <p><strong>Do not close this window or refresh the page.</strong></p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Payment Form -->
+    <div class="payment-form" *ngIf="!processing && !paymentSuccess">
+      <!-- Header -->
+      <div class="payment-header">
+        <button mat-icon-button (click)="goBack()" class="back-button">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h1>Secure Payment</h1>
+        <div class="security-badge">
+          <mat-icon>security</mat-icon>
+          <span>SSL Secured</span>
+        </div>
+      </div>
+
+      <div class="payment-content">
+        <!-- Order Summary -->
+        <mat-card class="order-summary">
+          <mat-card-header>
+            <mat-card-title>Order Summary</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="summary-item">
+              <span>{{ paymentData.description }}</span>
+              <span class="amount">${{ paymentData.amount | number:'1.2-2' }}</span>
+            </div>
+            <div class="summary-item">
+              <span>Processing Fee</span>
+              <span class="amount">$0.00</span>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-total">
+              <span>Total</span>
+              <span class="total-amount">${{ paymentData.amount | number:'1.2-2' }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Payment Methods -->
+        <mat-card class="payment-methods">
+          <mat-card-header>
+            <mat-card-title>Payment Method</mat-card-title>
+            <mat-card-subtitle>We accept all major credit cards</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="supported-cards">
+              <div class="card-icon" *ngFor="let card of supportedCards">
+                <mat-icon>{{ card.icon }}</mat-icon>
+                <span>{{ card.name }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Payment Form -->
+        <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+          <mat-card class="card-details">
+            <mat-card-header>
+              <mat-card-title>Card Details</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Card Number</mat-label>
+                  <input matInput formControlName="cardNumber" placeholder="1234 5678 9012 3456" 
+                         (input)="formatCardNumber($event)" maxlength="19">
+                  <mat-icon matSuffix>credit_card</mat-icon>
+                  <mat-error *ngIf="paymentForm.get('cardNumber')?.hasError('required')">
+                    Card number is required
+                  </mat-error>
+                  <mat-error *ngIf="paymentForm.get('cardNumber')?.hasError('pattern')">
+                    Please enter a valid card number
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Expiry Month</mat-label>
+                  <mat-select formControlName="expiryMonth">
+                    <mat-option *ngFor="let month of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="month">
+                      {{ month.toString().padStart(2, '0') }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="paymentForm.get('expiryMonth')?.hasError('required')">
+                    Month is required
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Expiry Year</mat-label>
+                  <mat-select formControlName="expiryYear">
+                    <mat-option *ngFor="let year of [2024,2025,2026,2027,2028,2029,2030,2031,2032,2033,2034]" [value]="year">
+                      {{ year }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="paymentForm.get('expiryYear')?.hasError('required')">
+                    Year is required
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>CVC</mat-label>
+                  <input matInput formControlName="cvc" placeholder="123" maxlength="4">
+                  <mat-icon matSuffix>help_outline</mat-icon>
+                  <mat-error *ngIf="paymentForm.get('cvc')?.hasError('required')">
+                    CVC is required
+                  </mat-error>
+                  <mat-error *ngIf="paymentForm.get('cvc')?.hasError('pattern')">
+                    Please enter a valid CVC
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Cardholder Name</mat-label>
+                  <input matInput formControlName="cardName" placeholder="John Doe">
+                  <mat-icon matSuffix>person</mat-icon>
+                  <mat-error *ngIf="paymentForm.get('cardName')?.hasError('required')">
+                    Cardholder name is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-options">
+                <mat-checkbox formControlName="saveCard">
+                  Save this card for future payments
+                </mat-checkbox>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Billing Information -->
+          <mat-card class="billing-info">
+            <mat-card-header>
+              <mat-card-title>Billing Information</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div [formGroup]="billingForm">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>First Name</mat-label>
+                  <input matInput formControlName="firstName">
+                  <mat-error *ngIf="billingForm.get('firstName')?.hasError('required')">
+                    First name is required
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Last Name</mat-label>
+                  <input matInput formControlName="lastName">
+                  <mat-error *ngIf="billingForm.get('lastName')?.hasError('required')">
+                    Last name is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Email Address</mat-label>
+                  <input matInput type="email" formControlName="email">
+                  <mat-icon matSuffix>email</mat-icon>
+                  <mat-error *ngIf="billingForm.get('email')?.hasError('required')">
+                    Email is required
+                  </mat-error>
+                  <mat-error *ngIf="billingForm.get('email')?.hasError('email')">
+                    Please enter a valid email
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Address</mat-label>
+                  <input matInput formControlName="address">
+                  <mat-icon matSuffix>home</mat-icon>
+                  <mat-error *ngIf="billingForm.get('address')?.hasError('required')">
+                    Address is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>City</mat-label>
+                  <input matInput formControlName="city">
+                  <mat-error *ngIf="billingForm.get('city')?.hasError('required')">
+                    City is required
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>State</mat-label>
+                  <input matInput formControlName="state">
+                  <mat-error *ngIf="billingForm.get('state')?.hasError('required')">
+                    State is required
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>ZIP Code</mat-label>
+                  <input matInput formControlName="zipCode">
+                  <mat-error *ngIf="billingForm.get('zipCode')?.hasError('required')">
+                    ZIP code is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Submit Button -->
+          <div class="payment-actions">
+            <button mat-raised-button color="primary" type="submit" 
+                    [disabled]="!paymentForm.valid || !billingForm.valid || processing"
+                    class="pay-button">
+              <mat-icon>lock</mat-icon>
+              Pay ${{ paymentData.amount | number:'1.2-2' }}
+            </button>
+          </div>
+
+          <!-- Error Message -->
+          <div class="error-message" *ngIf="errorMessage">
+            <mat-icon>error</mat-icon>
+            <span>{{ errorMessage }}</span>
+          </div>
+        </form>
+
+        <!-- Security Notice -->
+        <div class="security-notice">
+          <mat-icon>security</mat-icon>
+          <p>Your payment information is encrypted and secure. We never store your card details.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

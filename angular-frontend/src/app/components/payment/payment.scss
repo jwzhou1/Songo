@@ -1,0 +1,430 @@
+.payment-container {
+  min-height: calc(100vh - 64px);
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+
+  .payment-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+
+    // Success State
+    .success-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+
+      .success-card {
+        max-width: 500px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+        .success-content {
+          text-align: center;
+          padding: 40px 20px;
+
+          .success-icon {
+            margin-bottom: 24px;
+
+            mat-icon {
+              font-size: 80px;
+              width: 80px;
+              height: 80px;
+              color: #4caf50;
+            }
+          }
+
+          h2 {
+            color: #333;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+          }
+
+          p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            line-height: 1.6;
+
+            strong {
+              color: #4caf50;
+              font-weight: 600;
+            }
+          }
+
+          .success-actions {
+            margin-top: 32px;
+
+            button {
+              height: 48px;
+              font-size: 1rem;
+              font-weight: 500;
+              padding: 0 32px;
+
+              mat-icon {
+                margin-right: 8px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Processing State
+    .processing-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+
+      .processing-card {
+        max-width: 400px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+        .processing-content {
+          text-align: center;
+          padding: 40px 20px;
+
+          mat-spinner {
+            margin: 0 auto 24px;
+          }
+
+          h2 {
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+          }
+
+          p {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 12px;
+            line-height: 1.6;
+
+            strong {
+              color: #ff9800;
+            }
+          }
+        }
+      }
+    }
+
+    // Payment Form
+    .payment-form {
+      .payment-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 32px;
+        padding: 24px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+        .back-button {
+          color: #666;
+        }
+
+        h1 {
+          margin: 0;
+          font-size: 1.8rem;
+          font-weight: 600;
+          color: #333;
+        }
+
+        .security-badge {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #4caf50;
+          font-size: 0.9rem;
+          font-weight: 500;
+
+          mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+          }
+        }
+      }
+
+      .payment-content {
+        display: grid;
+        gap: 24px;
+
+        // Order Summary
+        .order-summary {
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+          mat-card-header {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            border-radius: 12px 12px 0 0;
+
+            mat-card-title {
+              color: white;
+              font-weight: 600;
+            }
+          }
+
+          mat-card-content {
+            padding: 24px;
+
+            .summary-item {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 12px 0;
+              font-size: 1rem;
+
+              .amount {
+                font-weight: 500;
+                color: #333;
+              }
+            }
+
+            .summary-divider {
+              height: 1px;
+              background: #e0e0e0;
+              margin: 16px 0;
+            }
+
+            .summary-total {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              padding: 16px 0;
+              font-size: 1.2rem;
+              font-weight: 600;
+              color: #333;
+
+              .total-amount {
+                color: #4caf50;
+                font-size: 1.4rem;
+              }
+            }
+          }
+        }
+
+        // Payment Methods
+        .payment-methods {
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+          mat-card-content {
+            padding: 24px;
+
+            .supported-cards {
+              display: flex;
+              gap: 20px;
+              justify-content: center;
+
+              .card-icon {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                padding: 16px;
+                border: 2px solid #e0e0e0;
+                border-radius: 8px;
+                transition: all 0.2s ease;
+
+                &:hover {
+                  border-color: #1976d2;
+                  background-color: #f5f5f5;
+                }
+
+                mat-icon {
+                  font-size: 32px;
+                  width: 32px;
+                  height: 32px;
+                  color: #666;
+                }
+
+                span {
+                  font-size: 0.8rem;
+                  color: #666;
+                  font-weight: 500;
+                }
+              }
+            }
+          }
+        }
+
+        // Card Details & Billing Info
+        .card-details, .billing-info {
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+          mat-card-header {
+            padding: 24px 24px 16px;
+
+            mat-card-title {
+              font-size: 1.25rem;
+              font-weight: 600;
+              color: #333;
+            }
+          }
+
+          mat-card-content {
+            padding: 0 24px 24px;
+
+            .form-row {
+              display: flex;
+              gap: 16px;
+              margin-bottom: 20px;
+
+              mat-form-field {
+                flex: 1;
+
+                &.full-width {
+                  width: 100%;
+                }
+              }
+            }
+
+            .form-options {
+              margin-top: 16px;
+
+              mat-checkbox {
+                font-size: 0.9rem;
+                color: #666;
+              }
+            }
+          }
+        }
+
+        // Payment Actions
+        .payment-actions {
+          text-align: center;
+          margin: 32px 0;
+
+          .pay-button {
+            height: 56px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 0 48px;
+            border-radius: 28px;
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+
+            mat-icon {
+              margin-right: 12px;
+              font-size: 20px;
+              width: 20px;
+              height: 20px;
+            }
+
+            &:hover {
+              box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4);
+            }
+
+            &:disabled {
+              box-shadow: none;
+            }
+          }
+        }
+
+        // Error Message
+        .error-message {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          color: #f44336;
+          background-color: #ffebee;
+          padding: 16px;
+          border-radius: 8px;
+          font-size: 0.9rem;
+          margin-top: 16px;
+
+          mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+          }
+        }
+
+        // Security Notice
+        .security-notice {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          padding: 20px;
+          background-color: #f8f9fa;
+          border-radius: 8px;
+          margin-top: 24px;
+
+          mat-icon {
+            color: #4caf50;
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+          }
+
+          p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .payment-container {
+    padding: 16px;
+
+    .payment-wrapper {
+      .payment-form {
+        .payment-header {
+          flex-direction: column;
+          gap: 16px;
+          text-align: center;
+
+          h1 {
+            font-size: 1.5rem;
+          }
+        }
+
+        .payment-content {
+          .payment-methods {
+            .supported-cards {
+              flex-wrap: wrap;
+              gap: 12px;
+
+              .card-icon {
+                flex: 1;
+                min-width: 80px;
+              }
+            }
+          }
+
+          .card-details, .billing-info {
+            mat-card-content {
+              .form-row {
+                flex-direction: column;
+                gap: 0;
+              }
+            }
+          }
+
+          .payment-actions {
+            .pay-button {
+              width: 100%;
+              max-width: 300px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

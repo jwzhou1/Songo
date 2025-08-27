@@ -1,0 +1,103 @@
+﻿<!-- SonGo Enterprise Shipping Platform -->
+<mat-toolbar color="primary" class="navbar">
+  <div class="navbar-container">
+    <div class="navbar-brand">
+      <mat-icon class="brand-icon">local_shipping</mat-icon>
+      <span class="brand-text">{{ title() }}</span>
+    </div>
+    
+    <nav class="navbar-nav">
+      <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <mat-icon>home</mat-icon>
+        Home
+      </a>
+      <a mat-button routerLink="/get-quote" routerLinkActive="active">
+        <mat-icon>request_quote</mat-icon>
+        Get Quote
+      </a>
+      <a mat-button routerLink="/tracking" routerLinkActive="active">
+        <mat-icon>track_changes</mat-icon>
+        Tracking
+      </a>
+      <a mat-button routerLink="/dashboard" routerLinkActive="active">
+        <mat-icon>dashboard</mat-icon>
+        Dashboard
+      </a>
+    </nav>
+    
+    <div class="navbar-actions">
+      <!-- Notifications (show only when logged in) -->
+      <app-notifications *ngIf="isLoggedIn"></app-notifications>
+
+      <!-- Auth buttons (show only when not logged in) -->
+      <div *ngIf="!isLoggedIn" class="auth-buttons">
+        <a mat-button routerLink="/login" routerLinkActive="active">
+          <mat-icon>login</mat-icon>
+          Login
+        </a>
+        <a mat-raised-button color="accent" routerLink="/register" routerLinkActive="active">
+          <mat-icon>person_add</mat-icon>
+          Register
+        </a>
+      </div>
+
+      <!-- User menu (show only when logged in) -->
+      <div *ngIf="isLoggedIn" class="user-menu">
+        <button mat-button [matMenuTriggerFor]="userMenu" class="user-button">
+          <mat-icon>account_circle</mat-icon>
+          <span>{{ currentUser?.firstName || 'User' }}</span>
+        </button>
+
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item routerLink="/dashboard">
+            <mat-icon>dashboard</mat-icon>
+            <span>Dashboard</span>
+          </button>
+          <button mat-menu-item routerLink="/profile">
+            <mat-icon>person</mat-icon>
+            <span>Profile</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </div>
+</mat-toolbar>
+
+<main class="main-content">
+  <router-outlet />
+</main>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>SonGo Enterprise</h3>
+        <p>Professional shipping and logistics solutions for your business.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="/get-quote">Get Quote</a></li>
+          <li><a href="/tracking">Package Tracking</a></li>
+          <li><a href="/dashboard">Dashboard</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="/contact">Contact Us</a></li>
+          <li><a href="/help">Help Center</a></li>
+          <li><a href="/api-docs">API Documentation</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 SonGo Enterprise Shipping Platform. All rights reserved.</p>
+    </div>
+  </div>
+</footer>

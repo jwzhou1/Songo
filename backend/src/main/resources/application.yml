@@ -49,6 +49,22 @@ jwt:
   secret: ${JWT_SECRET:songoSecretKeyForJWTTokenGenerationAndValidation2024!@#$%^&*()}
   expiration: 86400000 # 24 hours in milliseconds
 
+# AWS Configuration
+aws:
+  region: ${AWS_REGION:us-east-1}
+  access-key: ${AWS_ACCESS_KEY_ID:}
+  secret-key: ${AWS_SECRET_ACCESS_KEY:}
+  s3:
+    bucket: ${AWS_S3_BUCKET:songo-shipping-documents}
+  ses:
+    from-email: ${AWS_SES_FROM_EMAIL:noreply@songo-enterprise.com}
+
+# Stripe Configuration
+stripe:
+  api-key: ${STRIPE_SECRET_KEY:sk_test_your_stripe_secret_key}
+  publishable-key: ${STRIPE_PUBLISHABLE_KEY:pk_test_your_stripe_publishable_key}
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET:whsec_your_webhook_secret}
+
 # Carrier API Configuration
 carriers:
   canada-post:

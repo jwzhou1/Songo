@@ -26,6 +26,9 @@ public class QuoteService {
     @Autowired
     private QuoteRepository quoteRepository;
 
+    @Autowired
+    private CarrierIntegrationService carrierIntegrationService;
+
     private final Random random = new Random();
 
     public Quote createQuote(QuoteRequest request, User user) {
@@ -193,5 +196,48 @@ public class QuoteService {
             case FREIGHT -> baseDays + 1;
             case FTL -> baseDays + 2;
         };
+    }
+
+    // Additional methods for quote management
+
+    /**
+     * Save quote for later use
+     */
+    public Quote saveQuote(Long quoteId, User user) {
+        Quote quote = quoteRepository.findById(quoteId)
+            .orElseThrow(() -> new RuntimeException("Quote not found"));
+
+        // Verify user owns the quote
+        if (!quote.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Unauthorized access to quote");
+        }
+
+        quote.setStatus(Quote.QuoteStatus.SAVED);
+        return quoteRepository.save(quote);
+    }
+
+    /**
+     * Convert quote to shipment (this would integrate with ShipmentService)
+     */
+    public Quote convertToShipment(Long quoteId, User user) {
+        Quote quote = quoteRepository.findById(quoteId)
+            .orElseThrow(() -> new RuntimeException("Quote not found"));
+
+        // Verify user owns the quote
+        if (!quote.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Unauthorized access to quote");
+        }
+
+        // Update quote status to indicate it's been converted
+        quote.setStatus(Quote.QuoteStatus.CONVERTED_TO_SHIPMENT);
+        return quoteRepository.save(quote);
+    }
+
+    /**
+     * Get saved quotes for user
+     */
+    @Transactional(readOnly = true)
+    public List<Quote> getSavedQuotes(User user) {
+        return quoteRepository.findByUserAndStatus(user, Quote.QuoteStatus.SAVED);
     }
 }

@@ -1,0 +1,138 @@
+<div class="quote-container">
+  <div class="quote-header">
+    <h1>Get Shipping Quote</h1>
+    <p>Compare rates from multiple carriers and find the best shipping option for your needs.</p>
+  </div>
+
+  <div class="quote-content">
+    <mat-card class="quote-form-card">
+      <mat-card-header>
+        <mat-card-title>Shipping Details</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="quoteForm" (ngSubmit)="onSubmit()">
+          <!-- From Address -->
+          <div class="address-section">
+            <h3>From Address</h3>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Street Address</mat-label>
+                <input matInput formControlName="fromAddress" placeholder="123 Main St">
+                <mat-icon matSuffix>location_on</mat-icon>
+              </mat-form-field>
+            </div>
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>City</mat-label>
+                <input matInput formControlName="fromCity" placeholder="Toronto">
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Postal Code</mat-label>
+                <input matInput formControlName="fromPostal" placeholder="M5V 3A8">
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- To Address -->
+          <div class="address-section">
+            <h3>To Address</h3>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Street Address</mat-label>
+                <input matInput formControlName="toAddress" placeholder="456 Oak Ave">
+                <mat-icon matSuffix>location_on</mat-icon>
+              </mat-form-field>
+            </div>
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>City</mat-label>
+                <input matInput formControlName="toCity" placeholder="Vancouver">
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Postal Code</mat-label>
+                <input matInput formControlName="toPostal" placeholder="V6B 1A1">
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Package Details -->
+          <div class="package-section">
+            <h3>Package Details</h3>
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Package Type</mat-label>
+                <mat-select formControlName="packageType">
+                  <mat-option *ngFor="let type of packageTypes" [value]="type.value">
+                    {{ type.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Weight (lbs)</mat-label>
+                <input matInput type="number" formControlName="weight" placeholder="5.0">
+                <mat-icon matSuffix>scale</mat-icon>
+              </mat-form-field>
+            </div>
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Length (in)</mat-label>
+                <input matInput type="number" formControlName="length" placeholder="12">
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Width (in)</mat-label>
+                <input matInput type="number" formControlName="width" placeholder="8">
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Height (in)</mat-label>
+                <input matInput type="number" formControlName="height" placeholder="6">
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="!quoteForm.valid || loading">
+              <mat-icon *ngIf="!loading">search</mat-icon>
+              <mat-icon *ngIf="loading" class="spinning">refresh</mat-icon>
+              {{ loading ? 'Getting Quotes...' : 'Get Quotes' }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Quote Results -->
+    <div class="quote-results" *ngIf="quotes.length > 0">
+      <h2>Available Shipping Options</h2>
+      <div class="quotes-grid">
+        <mat-card class="quote-card" *ngFor="let quote of quotes">
+          <mat-card-content>
+            <div class="quote-header">
+              <div class="quote-carrier">
+                <mat-icon>{{ quote.icon }}</mat-icon>
+                <div>
+                  <h3>{{ quote.carrier }}</h3>
+                  <p>{{ quote.service }}</p>
+                </div>
+              </div>
+              <div class="quote-price">
+                <span class="price">${{ quote.price }}</span>
+              </div>
+            </div>
+            <div class="quote-details">
+              <p class="delivery-time">
+                <mat-icon>schedule</mat-icon>
+                {{ quote.deliveryTime }}
+              </p>
+            </div>
+            <div class="quote-actions">
+              <button mat-raised-button color="primary" (click)="selectQuote(quote)">
+                Select This Option
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

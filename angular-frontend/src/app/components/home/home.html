@@ -1,0 +1,86 @@
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-container">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        Professional Shipping Solutions for Your Business
+      </h1>
+      <p class="hero-subtitle">
+        Compare rates, track packages, and manage shipments across multiple carriers
+        with our enterprise-grade logistics platform.
+      </p>
+      <div class="hero-actions">
+        <a mat-raised-button color="primary" routerLink="/get-quote" class="cta-button">
+          <mat-icon>request_quote</mat-icon>
+          Get Quote Now
+        </a>
+        <a mat-button routerLink="/tracking" class="secondary-button">
+          <mat-icon>track_changes</mat-icon>
+          Track Package
+        </a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <mat-icon class="hero-icon">local_shipping</mat-icon>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+  <div class="container">
+    <h2 class="section-title">Why Choose SonGo Enterprise?</h2>
+    <div class="features-grid">
+      <mat-card class="feature-card" *ngFor="let feature of features">
+        <mat-card-content>
+          <div class="feature-icon">
+            <mat-icon>{{ feature.icon }}</mat-icon>
+          </div>
+          <h3>{{ feature.title }}</h3>
+          <p>{{ feature.description }}</p>
+          <a mat-button [routerLink]="feature.link" color="primary">
+            Learn More
+            <mat-icon>arrow_forward</mat-icon>
+          </a>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</section>
+
+<!-- Carriers Section -->
+<section class="carriers-section">
+  <div class="container">
+    <h2 class="section-title">Integrated Shipping Carriers</h2>
+    <p class="section-subtitle">
+      Connect with leading shipping providers for the best rates and service
+    </p>
+    <div class="carriers-grid">
+      <div class="carrier-item" *ngFor="let carrier of carriers">
+        <div class="carrier-logo">
+          <span class="carrier-name">{{ carrier.name }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-content">
+      <h2>Ready to Streamline Your Shipping?</h2>
+      <p>Join thousands of businesses that trust SonGo Enterprise for their logistics needs.</p>
+      <div class="cta-actions">
+        <a mat-raised-button color="accent" routerLink="/register" class="cta-button">
+          <mat-icon>person_add</mat-icon>
+          Start Free Trial
+        </a>
+        <a mat-button routerLink="/login" class="login-button">
+          <mat-icon>login</mat-icon>
+          Sign In
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

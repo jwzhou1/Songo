@@ -1,0 +1,361 @@
+.shipment-create-container {
+  min-height: calc(100vh - 64px);
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+
+  .shipment-create-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      padding: 24px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+      .back-button {
+        color: #666;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #333;
+        flex: 1;
+        text-align: center;
+      }
+
+      .header-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #1976d2;
+        font-size: 0.9rem;
+        font-weight: 500;
+
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+
+    .content-grid {
+      display: grid;
+      gap: 24px;
+
+      // Quote Summary
+      .quote-summary {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border-left: 4px solid #1976d2;
+
+        mat-card-header {
+          background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+          color: white;
+          border-radius: 12px 12px 0 0;
+
+          mat-card-title, mat-card-subtitle {
+            color: white;
+          }
+
+          mat-card-subtitle {
+            opacity: 0.9;
+          }
+        }
+
+        .service-details {
+          .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+
+            .carrier-info {
+              h3 {
+                margin: 0 0 8px 0;
+                font-size: 1.3rem;
+                font-weight: 600;
+                color: #333;
+              }
+
+              p {
+                margin: 0;
+                color: #666;
+                font-size: 0.9rem;
+              }
+            }
+
+            .price-info {
+              text-align: right;
+
+              .price {
+                display: block;
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #4caf50;
+                margin-bottom: 4px;
+              }
+
+              .delivery-time {
+                font-size: 0.9rem;
+                color: #666;
+              }
+            }
+          }
+
+          .delivery-estimate {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            margin-bottom: 16px;
+
+            mat-icon {
+              color: #1976d2;
+              font-size: 18px;
+              width: 18px;
+              height: 18px;
+            }
+
+            span {
+              color: #1976d2;
+              font-weight: 500;
+            }
+          }
+
+          .quote-details {
+            p {
+              margin: 4px 0;
+              font-size: 0.9rem;
+              color: #666;
+
+              strong {
+                color: #333;
+              }
+            }
+          }
+        }
+      }
+
+      // Form Sections
+      .form-section, .order-summary {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+        mat-card-header {
+          padding: 24px 24px 16px;
+
+          mat-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+          }
+
+          mat-card-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+          }
+        }
+
+        mat-card-content {
+          padding: 0 24px 24px;
+
+          .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+
+            mat-form-field {
+              flex: 1;
+
+              &.full-width {
+                width: 100%;
+              }
+            }
+
+            &.full-width {
+              flex-direction: column;
+            }
+          }
+
+          .additional-services {
+            margin-top: 24px;
+
+            h4 {
+              margin: 0 0 16px 0;
+              font-size: 1.1rem;
+              font-weight: 600;
+              color: #333;
+            }
+
+            .service-options {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 12px;
+
+              mat-checkbox {
+                font-size: 0.9rem;
+              }
+            }
+          }
+        }
+      }
+
+      // Order Summary
+      .order-summary {
+        border-left: 4px solid #4caf50;
+
+        .summary-line {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 0;
+          font-size: 0.95rem;
+
+          &:first-child {
+            font-weight: 500;
+          }
+        }
+
+        mat-divider {
+          margin: 16px 0;
+        }
+
+        .summary-total {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 12px 0;
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: #333;
+
+          span:last-child {
+            color: #4caf50;
+            font-size: 1.4rem;
+          }
+        }
+      }
+
+      // Form Actions
+      .form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-top: 32px;
+
+        .back-btn {
+          height: 48px;
+          font-size: 1rem;
+          font-weight: 500;
+
+          mat-icon {
+            margin-right: 8px;
+          }
+        }
+
+        .confirm-btn {
+          height: 56px;
+          font-size: 1.1rem;
+          font-weight: 600;
+          padding: 0 32px;
+          border-radius: 28px;
+          box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+
+          mat-icon {
+            margin-right: 12px;
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+
+            &.spinning {
+              animation: spin 1s linear infinite;
+            }
+          }
+
+          &:hover {
+            box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4);
+          }
+
+          &:disabled {
+            box-shadow: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .shipment-create-container {
+    padding: 16px;
+
+    .shipment-create-wrapper {
+      .page-header {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+
+        h1 {
+          font-size: 1.5rem;
+        }
+      }
+
+      .content-grid {
+        .quote-summary {
+          .service-details {
+            .service-header {
+              flex-direction: column;
+              gap: 16px;
+              text-align: center;
+
+              .price-info {
+                text-align: center;
+              }
+            }
+          }
+        }
+
+        .form-section, .order-summary {
+          mat-card-content {
+            .form-row {
+              flex-direction: column;
+              gap: 0;
+            }
+
+            .additional-services {
+              .service-options {
+                grid-template-columns: 1fr;
+              }
+            }
+          }
+        }
+
+        .form-actions {
+          flex-direction: column;
+
+          .back-btn, .confirm-btn {
+            width: 100%;
+            max-width: 300px;
+          }
+        }
+      }
+    }
+  }
+}

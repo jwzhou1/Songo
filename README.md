@@ -4,7 +4,8 @@ A comprehensive, enterprise-grade shipping and logistics management platform bui
 
 ## 🚀 Live Demo
 
-- **Frontend**: http://localhost:3001
+- **Frontend**: http://localhost:4200 (Angular Development Server)
+- **Production**: https://songo-five.vercel.app/
 - **Demo Account**:
   - Email: `demo@songo-enterprise.com`
   - Password: `demo123`
@@ -46,32 +47,32 @@ A comprehensive, enterprise-grade shipping and logistics management platform bui
 ## 🛠 Technology Stack
 
 ### Frontend
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Angular 18 (Standalone Components)
 - **Language**: TypeScript 5.3
-- **UI Library**: Material-UI (MUI) 5.15
-- **Styling**: Emotion CSS-in-JS
-- **Animations**: Framer Motion 10.16
-- **State Management**: React Query (TanStack Query)
-- **Form Handling**: React Hook Form + Yup validation
-- **Maps**: Google Maps JavaScript API
-- **Charts**: Recharts 2.8
-- **Testing**: Jest + React Testing Library
+- **UI Library**: Angular Material 18
+- **Styling**: SCSS (Sass)
+- **Animations**: Angular Animations
+- **State Management**: Angular Services + RxJS
+- **Form Handling**: Angular Reactive Forms
+- **HTTP Client**: Angular HttpClient
+- **Routing**: Angular Router (Lazy Loading)
+- **Testing**: Jasmine + Karma
 
 ### Backend & APIs
-- **Runtime**: Node.js 18+
-- **API Framework**: Next.js API Routes
-- **Serverless Functions**: AWS Lambda (via Vercel)
-- **Authentication**: JWT (JSON Web Tokens)
-- **Payment Processing**: Stripe API
-- **File Storage**: AWS S3 (for documents)
-- **Real-time**: Socket.IO
+- **Runtime**: Node.js 18+ (Backend Services)
+- **API Framework**: RESTful APIs (Mock/Demo Mode)
+- **Authentication**: JWT (JSON Web Tokens) - Demo Mode
+- **Payment Processing**: Stripe API - Demo Mode
+- **File Storage**: Local Storage (Demo)
+- **Real-time**: WebSocket (Planned)
+- **Data**: Mock Data Services
 
 ### Database & Storage
-- **Primary Database**: PostgreSQL (Supabase)
-- **Caching**: Redis (Upstash)
-- **File Storage**: AWS S3
+- **Primary Database**: Mock Data (Demo Mode)
+- **Caching**: Browser Local Storage
+- **File Storage**: Browser Storage
 - **Session Storage**: JWT + Local Storage
-- **Analytics**: Google Analytics 4
+- **Analytics**: Google Analytics 4 (Optional)
 
 ### DevOps & Deployment
 - **Hosting**: Vercel (Frontend + API)
@@ -131,33 +132,24 @@ cd songo-enterprise-shipping
 ### 2. Install Dependencies
 
 ```bash
-# Install frontend dependencies
-cd vercel-app
+# Install Angular frontend dependencies
+cd angular-frontend
 npm install
 
-# Install backend dependencies (if using separate backend)
-cd ../backend-serverless
-npm install
+# Install Angular CLI globally (if not already installed)
+npm install -g @angular/cli
 ```
 
-### 3. Database Setup
+### 3. Configure Environment (Optional)
 
-#### Option A: Using Supabase (Recommended)
-1. Create a [Supabase](https://supabase.com) account
-2. Create a new project
-3. Copy the database URL and anon key
+For demo purposes, the application works without any external APIs. All data is mocked.
 
-#### Option B: Local PostgreSQL
-1. Install PostgreSQL locally
-2. Create a database named `songo_enterprise`
-3. Run the SQL schema from `database/schema.sql`
-
-### 4. Configure Environment Variables
-
-Create `.env.local` in the `vercel-app` directory:
+If you want to integrate real APIs later, create environment files:
 
 ```bash
-cp .env.example .env.local
+# Create environment file (optional)
+cd angular-frontend
+cp src/environments/environment.example.ts src/environments/environment.ts
 ```
 
 ## 🔐 Environment Variables
@@ -234,52 +226,61 @@ MICROSOFT_CLIENT_SECRET="your-microsoft-client-secret"
 ### Development Mode
 
 ```bash
-# Start the development server
-cd vercel-app
-npm run dev
+# Start the Angular development server
+cd angular-frontend
+npm start
+# or
+ng serve
 ```
 
 The application will be available at:
-- **Frontend**: http://localhost:3000 (or 3001 if 3000 is in use)
-- **API**: http://localhost:3000/api
+- **Frontend**: http://localhost:4200
+- **API**: Mock data services (no backend required for demo)
 
 ### Production Build
 
 ```bash
-# Build the application
+# Build the Angular application
+cd angular-frontend
 npm run build
 
-# Start production server
-npm start
+# The built files will be in dist/angular-frontend/
+# Serve with any static file server
+npx http-server dist/angular-frontend
 ```
 
 ### Testing
 
 ```bash
-# Run all tests
+# Run Angular unit tests
+cd angular-frontend
 npm test
 
-# Run tests in watch mode
-npm run test:watch
+# Run tests in watch mode (default)
+ng test
 
-# Generate coverage report
-npm run test:coverage
+# Run tests once with coverage
+ng test --watch=false --code-coverage
+
+# Run end-to-end tests
+ng e2e
 ```
 
 ### Code Quality
 
 ```bash
-# Lint code
-npm run lint
+# Lint Angular code
+cd angular-frontend
+ng lint
 
 # Fix linting issues
-npm run lint:fix
+ng lint --fix
 
-# Type checking
-npm run type-check
+# Type checking (built into Angular CLI)
+ng build --dry-run
 
-# Format code
-npm run format
+# Format code with Prettier (if configured)
+npx prettier --write src/**/*.{ts,html,scss}
 ```
 
 ## 📚 API Documentation
@@ -353,20 +354,33 @@ serverless deploy
 
 ```
 songo-enterprise-shipping/
-├── vercel-app/                 # Frontend application
+├── angular-frontend/           # Angular frontend application
 │   ├── src/
-│   │   ├── app/               # Next.js app router pages
-│   │   ├── components/        # Reusable UI components
-│   │   ├── contexts/          # React contexts
-│   │   ├── services/          # API service layers
-│   │   └── theme/             # MUI theme configuration
-│   ├── public/                # Static assets
-│   └── package.json
-├── backend-serverless/         # Serverless backend functions
-│   └── src/functions/         # Lambda functions
-├── database/                   # Database schemas and migrations
-├── docs/                      # Documentation
-└── README.md
+│   │   ├── app/               # Angular app module and routing
+│   │   │   ├── components/    # Feature components
+│   │   │   │   ├── home/      # Home page component
+│   │   │   │   ├── get-quote/ # Quote request component
+│   │   │   │   ├── tracking/  # Package tracking component
+│   │   │   │   ├── login/     # User login component
+│   │   │   │   ├── register/  # User registration component
+│   │   │   │   └── dashboard/ # User dashboard component
+│   │   │   ├── services/      # Angular services
+│   │   │   ├── app.ts         # Root component
+│   │   │   ├── app.html       # Root template
+│   │   │   ├── app.scss       # Root styles
+│   │   │   └── app.routes.ts  # Application routing
+│   │   ├── assets/            # Static assets
+│   │   ├── environments/      # Environment configurations
+│   │   └── styles.scss        # Global styles
+│   ├── public/                # Public assets
+│   ├── angular.json           # Angular CLI configuration
+│   ├── package.json           # Dependencies and scripts
+│   └── vercel.json            # Vercel deployment config
+├── vercel-app/                 # Legacy Next.js app (deprecated)
+├── docs/                       # Documentation
+├── vercel.json                 # Root Vercel configuration
+├── package.json                # Root package configuration
+└── README.md                   # This file
 ```
 
 ## 🎮 Demo Features & Test Data
@@ -388,34 +402,54 @@ songo-enterprise-shipping/
 
 ## 🔧 Key Features Walkthrough
 
-### 1. User Registration & Login
-1. Visit `/register` to create a new account
-2. Use `/login` with demo credentials
-3. Access `/dashboard` for user management
+### 1. Home Page (`/`)
+- **Hero Section**: Professional landing page with call-to-action buttons
+- **Features Overview**: Cards showcasing key platform capabilities
+- **Carrier Integration**: Display of supported shipping carriers
+- **Call-to-Action**: Direct links to quote and tracking features
 
-### 2. Get Shipping Quote
-1. Navigate to `/get-quote`
-2. Enter pickup and delivery addresses
-3. Select package dimensions and weight
-4. Compare rates from multiple carriers
+### 2. Get Shipping Quote (`/get-quote`)
+- **Address Forms**: Reactive forms for pickup and delivery addresses
+- **Package Details**: Weight, dimensions, and package type selection
+- **Rate Comparison**: Mock API simulation showing multiple carrier quotes
+- **Interactive Results**: Hover effects and selection capabilities
+- **Responsive Design**: Mobile-optimized form layout
 
-### 3. Create Shipment & Payment
-1. Select preferred shipping option
-2. Proceed to `/checkout`
-3. Enter payment information (use test cards)
-4. Complete payment and get confirmation
+### 3. Package Tracking (`/tracking`)
+- **Tracking Input**: Search form with validation
+- **Sample Numbers**: Click-to-fill demo tracking numbers
+- **Tracking Timeline**: Visual progress indicator with icons
+- **Status Updates**: Color-coded status information
+- **Mock Data**: Realistic tracking events and locations
 
-### 4. Track Package
-1. Visit `/tracking`
-2. Enter any test tracking number
-3. View real-time tracking with interactive map
-4. See delivery status and history
+### 4. User Authentication (`/login`, `/register`)
+- **Login Form**: Email and password authentication (demo mode)
+- **Registration**: New user account creation (demo mode)
+- **Form Validation**: Angular reactive forms with validation
+- **Material Design**: Consistent UI with Angular Material
 
-### 5. User Dashboard
-1. Login and visit `/dashboard`
-2. View shipment history
-3. Check invoice history
-4. Manage profile settings
+### 5. User Dashboard (`/dashboard`)
+- **Account Overview**: User profile and account information
+- **Shipment History**: Past and current shipments
+- **Quick Actions**: Fast access to common features
+- **Responsive Layout**: Mobile-friendly dashboard design
+
+## 🎨 Angular-Specific Features
+
+### **Modern Angular Architecture**
+- **Standalone Components**: No NgModules required
+- **Lazy Loading**: Route-based code splitting
+- **Reactive Forms**: Type-safe form handling
+- **Angular Material**: Consistent Material Design UI
+- **SCSS Styling**: Advanced styling with Sass
+- **TypeScript**: Full type safety throughout
+
+### **Performance Optimizations**
+- **OnPush Change Detection**: Optimized rendering
+- **Lazy Loading Routes**: Reduced initial bundle size
+- **Tree Shaking**: Unused code elimination
+- **AOT Compilation**: Ahead-of-time compilation
+- **Service Workers**: PWA capabilities (configurable)
 
 ## 🚫 Contributing
 

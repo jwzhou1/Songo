@@ -114,6 +114,12 @@ public class Shipment {
     // Relationships
     @OneToMany(mappedBy = "shipment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Package> packages;
+
+    @OneToMany(mappedBy = "shipment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Payment> payments;
+
+    @OneToOne(mappedBy = "shipment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Invoice invoice;
     
     // Enums
     public enum ShipmentStatus {
@@ -241,4 +247,11 @@ public class Shipment {
     public boolean canBeCancelled() {
         return status == ShipmentStatus.DRAFT || status == ShipmentStatus.QUOTED || status == ShipmentStatus.BOOKED;
     }
+
+    // Payment and Invoice getters/setters
+    public List<Payment> getPayments() { return payments; }
+    public void setPayments(List<Payment> payments) { this.payments = payments; }
+
+    public Invoice getInvoice() { return invoice; }
+    public void setInvoice(Invoice invoice) { this.invoice = invoice; }
 }

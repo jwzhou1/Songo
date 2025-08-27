@@ -138,7 +138,9 @@ public class Quote {
         QUOTED,
         ACCEPTED,
         REJECTED,
-        EXPIRED
+        EXPIRED,
+        SAVED,
+        CONVERTED_TO_SHIPMENT
     }
     
     // Constructors

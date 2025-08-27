@@ -1,0 +1,246 @@
+<div class="tracking-container">
+  <div class="tracking-wrapper">
+    <!-- Header Section -->
+    <div class="page-header">
+      <h1>
+        <mat-icon>location_on</mat-icon>
+        Track Your Package
+      </h1>
+      <p>Enter your tracking number to get real-time updates on your shipment</p>
+    </div>
+    
+    <!-- Search Card -->
+    <mat-card class="search-card">
+      <mat-card-content>
+        <form [formGroup]="trackingForm" (ngSubmit)="onSubmit()">
+          <div class="search-form">
+            <mat-form-field appearance="outline" class="tracking-input">
+              <mat-label>Tracking Number</mat-label>
+              <input matInput formControlName="trackingNumber" 
+                     placeholder="Enter tracking number (e.g., SG123456789)">
+              <mat-icon matSuffix>search</mat-icon>
+              <mat-hint>Try: SG123456789 for demo data</mat-hint>
+            </mat-form-field>
+            
+            <button mat-raised-button color="primary" type="submit" 
+                    [disabled]="!trackingForm.valid || loading" class="track-button">
+              <mat-icon *ngIf="!loading">search</mat-icon>
+              <mat-icon *ngIf="loading" class="spinning">refresh</mat-icon>
+              {{ loading ? 'Tracking...' : 'Track Package' }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tracking Results -->
+    <div *ngIf="trackingResult" class="tracking-results">
+      <!-- Package Overview -->
+      <mat-card class="overview-card">
+        <mat-card-content>
+          <div class="package-header">
+            <div class="package-info">
+              <h2>{{ trackingResult.trackingNumber }}</h2>
+              <div class="carrier-service">
+                <mat-icon>local_shipping</mat-icon>
+                <span>{{ trackingResult.carrier }} - {{ trackingResult.service }}</span>
+              </div>
+            </div>
+            
+            <div class="status-section">
+              <div class="status-badge" [ngClass]="getStatusColor(trackingResult.status)">
+                <mat-icon>{{ getStatusIcon(trackingResult.status) }}</mat-icon>
+                {{ trackingResult.status }}
+              </div>
+              <div class="delivery-date">
+                <mat-icon>schedule</mat-icon>
+                <span>{{ formatDate(trackingResult.estimatedDelivery) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="progress-section">
+            <div class="progress-header">
+              <span>Delivery Progress</span>
+              <span>{{ getProgressPercentage() }}%</span>
+            </div>
+            <mat-progress-bar mode="determinate" [value]="getProgressPercentage()" 
+                              [color]="trackingResult.status === 'Delivered' ? 'primary' : 'accent'">
+            </mat-progress-bar>
+          </div>
+
+          <!-- Package Details -->
+          <div class="package-details">
+            <div class="detail-item">
+              <mat-icon>straighten</mat-icon>
+              <span>{{ trackingResult.dimensions }}</span>
+            </div>
+            <div class="detail-item">
+              <mat-icon>scale</mat-icon>
+              <span>{{ trackingResult.weight }}</span>
+            </div>
+            <div class="detail-item">
+              <mat-icon>place</mat-icon>
+              <span>{{ trackingResult.currentLocation }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Detailed Timeline -->
+      <mat-card class="timeline-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>timeline</mat-icon>
+            Tracking Timeline
+          </mat-card-title>
+          <mat-card-subtitle>Detailed package journey</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="timeline">
+            <div class="timeline-item" 
+                 *ngFor="let event of trackingResult.events; let i = index; let last = last"
+                 [ngClass]="{
+                   'completed': event.completed,
+                   'current': event.current,
+                   'estimated': event.estimated
+                 }">
+              
+              <div class="timeline-marker">
+                <div class="marker-circle">
+                  <mat-icon>{{ event.icon }}</mat-icon>
+                </div>
+                <div class="timeline-line" *ngIf="!last"></div>
+              </div>
+              
+              <div class="timeline-content">
+                <div class="event-header">
+                  <h3>{{ event.status }}</h3>
+                  <div class="event-badges">
+                    <mat-chip *ngIf="event.current" color="primary" selected>Current</mat-chip>
+                    <mat-chip *ngIf="event.estimated" color="accent">Estimated</mat-chip>
+                    <mat-chip *ngIf="event.completed" color="primary">Completed</mat-chip>
+                  </div>
+                </div>
+                
+                <div class="event-details">
+                  <div class="event-location">
+                    <mat-icon>place</mat-icon>
+                    <span>{{ event.location }}</span>
+                  </div>
+                  <div class="event-time">
+                    <mat-icon>access_time</mat-icon>
+                    <span>{{ formatDate(event.date) }}</span>
+                  </div>
+                </div>
+                
+                <p class="event-description">{{ event.description }}</p>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Route Map -->
+      <mat-card class="map-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>map</mat-icon>
+            Route Map
+          </mat-card-title>
+          <mat-card-subtitle>Package journey visualization</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="route-info">
+            <div class="route-point origin">
+              <mat-icon>radio_button_checked</mat-icon>
+              <div class="point-info">
+                <h4>Origin</h4>
+                <p>{{ trackingResult.origin?.name || 'Pickup Location' }}</p>
+              </div>
+            </div>
+            
+            <div class="route-line-container">
+              <div class="route-progress" [style.width.%]="getProgressPercentage()"></div>
+            </div>
+            
+            <div class="route-point destination">
+              <mat-icon>place</mat-icon>
+              <div class="point-info">
+                <h4>Destination</h4>
+                <p>{{ trackingResult.destination?.name || 'Delivery Location' }}</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Interactive Map Container -->
+          <div class="map-container" #mapContainer>
+            <div class="route-map">
+              <div class="route-visualization">
+                <div class="location-markers">
+                  <div class="location-marker" 
+                       *ngFor="let event of trackingResult.events; let i = index"
+                       [ngClass]="{
+                         'completed': event.completed,
+                         'current': event.current,
+                         'estimated': event.estimated
+                       }"
+                       [style.left.%]="(i / (trackingResult.events.length - 1)) * 90 + 5">
+                    
+                    <div class="marker-icon">
+                      <mat-icon>{{ event.icon }}</mat-icon>
+                    </div>
+                    
+                    <div class="marker-popup">
+                      <div class="popup-header">
+                        <strong>{{ event.status }}</strong>
+                        <span class="popup-time">{{ event.date | date:'short' }}</span>
+                      </div>
+                      <div class="popup-location">{{ event.location }}</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="route-path">
+                  <div class="path-completed" [style.width.%]="getProgressPercentage()"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button mat-button (click)="reset()" class="reset-btn">
+          <mat-icon>refresh</mat-icon>
+          Track Another Package
+        </button>
+        
+        <button mat-raised-button color="primary" class="share-btn">
+          <mat-icon>share</mat-icon>
+          Share Tracking
+        </button>
+      </div>
+    </div>
+
+    <!-- Sample Tracking Numbers (when no results) -->
+    <mat-card *ngIf="!trackingResult" class="sample-card">
+      <mat-card-header>
+        <mat-card-title>Try Sample Tracking Numbers</mat-card-title>
+        <mat-card-subtitle>Click to test with demo data</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="sample-numbers">
+          <mat-chip-listbox>
+            <mat-chip-option (click)="trackingForm.patchValue({trackingNumber: 'SG123456789'})">
+              <mat-icon matChipAvatar>local_shipping</mat-icon>
+              SG123456789 (Demo Package)
+            </mat-chip-option>
+          </mat-chip-listbox>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

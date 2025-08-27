@@ -1,0 +1,185 @@
+<div class="dashboard-container">
+  <!-- Header Section -->
+  <div class="dashboard-header">
+    <div class="welcome-section">
+      <h1>Welcome back, {{ user?.firstName }}!</h1>
+      <p>Manage your shipments, track packages, and view your shipping history</p>
+    </div>
+    <div class="quick-actions">
+      <button mat-raised-button color="primary" routerLink="/get-quote">
+        <mat-icon>add</mat-icon>
+        New Quote
+      </button>
+      <button mat-raised-button color="accent" routerLink="/tracking">
+        <mat-icon>search</mat-icon>
+        Track Package
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-icon active-shipments">
+            <mat-icon>local_shipping</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ stats.activeShipments }}</h3>
+            <p>Active Shipments</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-icon total-quotes">
+            <mat-icon>description</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ stats.totalQuotes }}</h3>
+            <p>Total Quotes</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-icon total-spent">
+            <mat-icon>attach_money</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>${{ stats.totalSpent | number:'1.2-2' }}</h3>
+            <p>Total Spent</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-icon delivered-packages">
+            <mat-icon>done_all</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h3>{{ stats.deliveredPackages }}</h3>
+            <p>Delivered</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="content-grid">
+    <!-- Recent Shipments -->
+    <mat-card class="content-card">
+      <mat-card-header>
+        <mat-card-title>Recent Shipments</mat-card-title>
+        <mat-card-subtitle>Your latest shipping activity</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="shipment-list" *ngIf="recentShipments.length > 0; else noShipments">
+          <div class="shipment-item" *ngFor="let shipment of recentShipments">
+            <div class="shipment-info">
+              <div class="shipment-header">
+                <span class="tracking-number">{{ shipment.trackingNumber }}</span>
+                <span class="shipment-status" [ngClass]="shipment.status.toLowerCase()">
+                  {{ shipment.status }}
+                </span>
+              </div>
+              <div class="shipment-details">
+                <p><strong>From:</strong> {{ shipment.origin }}</p>
+                <p><strong>To:</strong> {{ shipment.destination }}</p>
+                <p><strong>Date:</strong> {{ shipment.date | date:'short' }}</p>
+              </div>
+            </div>
+            <div class="shipment-actions">
+              <button mat-icon-button (click)="trackShipment(shipment.trackingNumber)">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+        <ng-template #noShipments>
+          <div class="empty-state">
+            <mat-icon>local_shipping</mat-icon>
+            <p>No shipments yet</p>
+            <button mat-raised-button color="primary" routerLink="/get-quote">Create Your First Quote</button>
+          </div>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Saved Quotes -->
+    <mat-card class="content-card">
+      <mat-card-header>
+        <mat-card-title>Saved Quotes</mat-card-title>
+        <mat-card-subtitle>Quotes ready to ship</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="quote-list" *ngIf="savedQuotes.length > 0; else noQuotes">
+          <div class="quote-item" *ngFor="let quote of savedQuotes">
+            <div class="quote-info">
+              <div class="quote-header">
+                <span class="quote-number">{{ quote.quoteNumber }}</span>
+                <span class="quote-price">${{ quote.price | number:'1.2-2' }}</span>
+              </div>
+              <div class="quote-details">
+                <p><strong>Service:</strong> {{ quote.service }}</p>
+                <p><strong>Route:</strong> {{ quote.route }}</p>
+                <p><strong>Valid Until:</strong> {{ quote.validUntil | date:'short' }}</p>
+              </div>
+            </div>
+            <div class="quote-actions">
+              <button mat-raised-button color="primary" (click)="shipQuote(quote)">
+                Ship Now
+              </button>
+            </div>
+          </div>
+        </div>
+        <ng-template #noQuotes>
+          <div class="empty-state">
+            <mat-icon>description</mat-icon>
+            <p>No saved quotes</p>
+            <button mat-raised-button color="primary" routerLink="/get-quote">Get a Quote</button>
+          </div>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Recent Activity -->
+  <mat-card class="activity-card">
+    <mat-card-header>
+      <mat-card-title>Recent Activity</mat-card-title>
+      <mat-card-subtitle>Your shipping timeline</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="activity-timeline" *ngIf="recentActivity.length > 0; else noActivity">
+        <div class="activity-item" *ngFor="let activity of recentActivity">
+          <div class="activity-icon" [ngClass]="activity.type">
+            <mat-icon>{{ getActivityIcon(activity.type) }}</mat-icon>
+          </div>
+          <div class="activity-content">
+            <h4>{{ activity.title }}</h4>
+            <p>{{ activity.description }}</p>
+            <span class="activity-time">{{ activity.timestamp | date:'short' }}</span>
+          </div>
+        </div>
+      </div>
+      <ng-template #noActivity>
+        <div class="empty-state">
+          <mat-icon>timeline</mat-icon>
+          <p>No recent activity</p>
+        </div>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+</div>

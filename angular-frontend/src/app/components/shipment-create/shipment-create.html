@@ -1,0 +1,247 @@
+<div class="shipment-create-container">
+  <div class="shipment-create-wrapper">
+    <!-- Header -->
+    <div class="page-header">
+      <button mat-icon-button (click)="goBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1>Create Shipment</h1>
+      <div class="header-badge">
+        <mat-icon>local_shipping</mat-icon>
+        <span>Step 2 of 3</span>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <!-- Selected Quote Summary -->
+      <mat-card class="quote-summary">
+        <mat-card-header>
+          <mat-card-title>Selected Service</mat-card-title>
+          <mat-card-subtitle>Review your chosen shipping option</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="service-details">
+            <div class="service-header">
+              <div class="carrier-info">
+                <h3>{{ quoteData?.carrier }} {{ quoteData?.service }}</h3>
+                <p *ngIf="quoteData?.route">{{ quoteData?.route }}</p>
+              </div>
+              <div class="price-info">
+                <span class="price">${{ quoteData?.price | number:'1.2-2' }}</span>
+                <span class="delivery-time">{{ quoteData?.estimatedDays }} business day{{ quoteData?.estimatedDays !== 1 ? 's' : '' }}</span>
+              </div>
+            </div>
+            
+            <div class="delivery-estimate" *ngIf="quoteData">
+              <mat-icon>schedule</mat-icon>
+              <span>Estimated delivery: {{ getEstimatedDeliveryDate() | date:'fullDate' }}</span>
+            </div>
+
+            <div class="quote-details" *ngIf="quoteData?.quoteNumber">
+              <p><strong>Quote Number:</strong> {{ quoteData?.quoteNumber }}</p>
+              <p *ngIf="quoteData?.validUntil"><strong>Valid Until:</strong> {{ quoteData?.validUntil | date:'short' }}</p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Shipment Form -->
+      <form [formGroup]="shipmentForm" (ngSubmit)="onConfirm()">
+        <!-- Sender Information -->
+        <mat-card class="form-section">
+          <mat-card-header>
+            <mat-card-title>Sender Information</mat-card-title>
+            <mat-card-subtitle>Who is sending this package?</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Full Name</mat-label>
+                <input matInput formControlName="senderName" placeholder="John Doe">
+                <mat-icon matSuffix>person</mat-icon>
+                <mat-error *ngIf="shipmentForm.get('senderName')?.hasError('required')">
+                  Sender name is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Company (Optional)</mat-label>
+                <input matInput formControlName="senderCompany" placeholder="Company Name">
+                <mat-icon matSuffix>business</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Phone Number</mat-label>
+                <input matInput formControlName="senderPhone" placeholder="(555) 123-4567">
+                <mat-icon matSuffix>phone</mat-icon>
+                <mat-error *ngIf="shipmentForm.get('senderPhone')?.hasError('required')">
+                  Phone number is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Email Address</mat-label>
+                <input matInput type="email" formControlName="senderEmail" placeholder="john@example.com">
+                <mat-icon matSuffix>email</mat-icon>
+                <mat-error *ngIf="shipmentForm.get('senderEmail')?.hasError('required')">
+                  Email is required
+                </mat-error>
+                <mat-error *ngIf="shipmentForm.get('senderEmail')?.hasError('email')">
+                  Please enter a valid email
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Recipient Information -->
+        <mat-card class="form-section">
+          <mat-card-header>
+            <mat-card-title>Recipient Information</mat-card-title>
+            <mat-card-subtitle>Who will receive this package?</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Full Name</mat-label>
+                <input matInput formControlName="recipientName" placeholder="Jane Smith">
+                <mat-icon matSuffix>person</mat-icon>
+                <mat-error *ngIf="shipmentForm.get('recipientName')?.hasError('required')">
+                  Recipient name is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Company (Optional)</mat-label>
+                <input matInput formControlName="recipientCompany" placeholder="Company Name">
+                <mat-icon matSuffix>business</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Phone Number</mat-label>
+                <input matInput formControlName="recipientPhone" placeholder="(555) 987-6543">
+                <mat-icon matSuffix>phone</mat-icon>
+                <mat-error *ngIf="shipmentForm.get('recipientPhone')?.hasError('required')">
+                  Phone number is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Email Address (Optional)</mat-label>
+                <input matInput type="email" formControlName="recipientEmail" placeholder="jane@example.com">
+                <mat-icon matSuffix>email</mat-icon>
+                <mat-error *ngIf="shipmentForm.get('recipientEmail')?.hasError('email')">
+                  Please enter a valid email
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Shipment Options -->
+        <mat-card class="form-section">
+          <mat-card-header>
+            <mat-card-title>Shipment Options</mat-card-title>
+            <mat-card-subtitle>Customize your shipping preferences</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Pickup Date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="pickupDate">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="shipmentForm.get('pickupDate')?.hasError('required')">
+                  Pickup date is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Insurance Value ($)</mat-label>
+                <input matInput type="number" formControlName="insuranceValue" placeholder="0.00" min="0">
+                <mat-icon matSuffix>security</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row full-width">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Delivery Instructions (Optional)</mat-label>
+                <textarea matInput formControlName="deliveryInstructions" 
+                         placeholder="Special delivery instructions..." rows="3"></textarea>
+                <mat-icon matSuffix>note</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <!-- Additional Services -->
+            <div class="additional-services">
+              <h4>Additional Services</h4>
+              <div class="service-options">
+                <mat-checkbox formControlName="signatureRequired">
+                  Signature Required (+$0.00)
+                </mat-checkbox>
+                <mat-checkbox formControlName="saturdayDelivery">
+                  Saturday Delivery (+$15.00)
+                </mat-checkbox>
+                <mat-checkbox formControlName="adultSignature">
+                  Adult Signature Required (+$5.50)
+                </mat-checkbox>
+                <mat-checkbox formControlName="holdAtLocation">
+                  Hold at FedEx Location (+$0.00)
+                </mat-checkbox>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Order Summary -->
+        <mat-card class="order-summary">
+          <mat-card-header>
+            <mat-card-title>Order Summary</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="summary-line">
+              <span>Shipping Service</span>
+              <span>${{ quoteData?.price | number:'1.2-2' }}</span>
+            </div>
+            <div class="summary-line" *ngIf="shipmentForm.get('saturdayDelivery')?.value">
+              <span>Saturday Delivery</span>
+              <span>$15.00</span>
+            </div>
+            <div class="summary-line" *ngIf="shipmentForm.get('adultSignature')?.value">
+              <span>Adult Signature</span>
+              <span>$5.50</span>
+            </div>
+            <div class="summary-line" *ngIf="shipmentForm.get('insuranceValue')?.value > 0">
+              <span>Insurance</span>
+              <span>${{ Math.max(2.50, shipmentForm.get('insuranceValue')?.value * 0.01) | number:'1.2-2' }}</span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="summary-total">
+              <span>Total</span>
+              <span>${{ calculateTotalAmount() | number:'1.2-2' }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button mat-button type="button" (click)="goBack()" class="back-btn">
+            <mat-icon>arrow_back</mat-icon>
+            Back to Quotes
+          </button>
+          
+          <button mat-raised-button color="primary" type="submit" 
+                  [disabled]="!shipmentForm.valid || loading" class="confirm-btn">
+            <mat-icon *ngIf="!loading">payment</mat-icon>
+            <mat-icon *ngIf="loading" class="spinning">refresh</mat-icon>
+            {{ loading ? 'Processing...' : 'Proceed to Payment' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
