@@ -2,6 +2,10 @@
   "version": 2,
   "name": "songo-enterprise-shipping",
   "framework": "nextjs",
+  "buildCommand": "cd vercel-app && npm install && npm run build",
+  "outputDirectory": "vercel-app/.next",
+  "installCommand": "cd vercel-app && npm install",
+  "devCommand": "cd vercel-app && npm run dev",
   "env": {
     "NEXT_PUBLIC_APP_NAME": "SonGo Enterprise",
     "NEXT_PUBLIC_APP_VERSION": "1.0.0",
@@ -10,7 +14,7 @@
     "DEMO_MODE": "true"
   },
   "functions": {
-    "src/app/api/**/*.ts": {
+    "vercel-app/src/app/api/**/*.ts": {
       "maxDuration": 30
     }
   },
@@ -46,10 +50,6 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
         }
       ]
     }

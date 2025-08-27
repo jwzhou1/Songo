@@ -1,0 +1,28 @@
+{
+  "name": "songo-enterprise-shipping-root",
+  "version": "1.0.0",
+  "description": "SonGo Enterprise Shipping Platform - Root Configuration",
+  "private": true,
+  "scripts": {
+    "dev": "cd vercel-app && npm run dev",
+    "build": "cd vercel-app && npm install && npm run build",
+    "start": "cd vercel-app && npm start",
+    "install-deps": "cd vercel-app && npm install",
+    "deploy": "vercel",
+    "deploy:prod": "vercel --prod"
+  },
+  "keywords": [
+    "shipping",
+    "logistics",
+    "enterprise",
+    "nextjs",
+    "typescript",
+    "vercel"
+  ],
+  "author": "SonGo Enterprise",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

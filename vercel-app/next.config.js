@@ -118,7 +118,7 @@ const nextConfig = {
       }
     ]
   },
-  // Output configuration
+  // Output configuration for Vercel
   output: 'standalone',
   poweredByHeader: false,
   compress: true,
