@@ -32,6 +32,50 @@ export class TrackingService {
   private baseURL = process.env.NEXT_PUBLIC_API_URL || '/api'
   private googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
+  // Detect carrier from tracking number format
+  detectCarrier(trackingNumber: string): string {
+    const cleanNumber = trackingNumber.replace(/\s+/g, '').toUpperCase()
+
+    // UPS tracking numbers
+    if (/^1Z[0-9A-Z]{16}$/.test(cleanNumber)) {
+      return 'ups'
+    }
+
+    // FedEx tracking numbers
+    if (/^[0-9]{12}$/.test(cleanNumber) || /^[0-9]{14}$/.test(cleanNumber)) {
+      return 'fedex'
+    }
+
+    // DHL tracking numbers
+    if (/^[0-9]{10}$/.test(cleanNumber) || /^[0-9]{11}$/.test(cleanNumber)) {
+      return 'dhl'
+    }
+
+    // USPS tracking numbers
+    if (/^(94|93|92|94|95)[0-9]{20}$/.test(cleanNumber) ||
+        /^[A-Z]{2}[0-9]{9}[A-Z]{2}$/.test(cleanNumber)) {
+      return 'usps'
+    }
+
+    // Canada Post tracking numbers
+    if (/^[0-9]{16}$/.test(cleanNumber)) {
+      return 'canada_post'
+    }
+
+    // Canpar tracking numbers (starts with letter, followed by numbers)
+    if (/^[A-Z][0-9]{18,20}$/.test(cleanNumber)) {
+      return 'canpar'
+    }
+
+    // Purolator tracking numbers
+    if (/^[0-9]{12}$/.test(cleanNumber) && cleanNumber.startsWith('1')) {
+      return 'purolator'
+    }
+
+    // Default fallback
+    return 'unknown'
+  }
+
   // Real-time tracking from multiple carriers
   async trackPackage(trackingNumber: string): Promise<TrackingResponse | null> {
     try {
@@ -509,31 +553,7 @@ export class TrackingService {
     }
   }
 
-  // Detect carrier from tracking number format
-  private detectCarrier(trackingNumber: string): string {
-    // FedEx patterns
-    if (/^\d{12}$/.test(trackingNumber) || /^\d{14}$/.test(trackingNumber)) {
-      return 'fedex'
-    }
-    
-    // UPS patterns
-    if (/^1Z[0-9A-Z]{16}$/.test(trackingNumber)) {
-      return 'ups'
-    }
-    
-    // DHL patterns
-    if (/^\d{10}$/.test(trackingNumber) || /^\d{11}$/.test(trackingNumber)) {
-      return 'dhl'
-    }
-    
-    // USPS patterns
-    if (/^(94|93|92|94|95)\d{20}$/.test(trackingNumber) || 
-        /^[A-Z]{2}\d{9}[A-Z]{2}$/.test(trackingNumber)) {
-      return 'usps'
-    }
-    
-    return 'unknown'
-  }
+
 
   // Real-time tracking simulation for demo
   simulateRealTimeTracking(trackingNumber: string): Promise<TrackingResponse> {

@@ -276,11 +276,24 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
               <Typography variant="subtitle1" gutterBottom>
                 Card Information
               </Typography>
+
+              {/* Test Card Information */}
+              <Alert severity="info" sx={{ mb: 2 }}>
+                <Typography variant="body2">
+                  <strong>Test Card Numbers:</strong><br />
+                  • Success: 4242 4242 4242 4242<br />
+                  • Declined: 4000 0000 0000 0002<br />
+                  • Requires Authentication: 4000 0025 0000 3155<br />
+                  Use any future expiry date and any 3-digit CVC
+                </Typography>
+              </Alert>
+
               <Box
                 sx={{
                   p: 2,
                   border: '1px solid #e0e0e0',
                   borderRadius: 1,
+                  backgroundColor: '#fafafa',
                   '& .StripeElement': {
                     height: '40px',
                     padding: '10px 12px',
@@ -302,13 +315,21 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                   }
                 }}
               >
-                <CardElement options={cardElementOptions} />
+                {stripe ? (
+                  <CardElement options={cardElementOptions} />
+                ) : (
+                  <Box sx={{ p: 2, textAlign: 'center' }}>
+                    <CircularProgress size={20} />
+                    <Typography variant="body2" sx={{ ml: 1 }}>
+                      Loading payment form...
+                    </Typography>
+                  </Box>
+                )}
               </Box>
-              <div id="card-errors" role="alert" style={{ 
-                color: '#fa755a', 
-                fontSize: '14px', 
-                marginTop: '8px',
-                display: 'none'
+              <div id="card-errors" role="alert" style={{
+                color: '#fa755a',
+                fontSize: '14px',
+                marginTop: '8px'
               }} />
             </Box>
 
@@ -493,10 +514,15 @@ export default function CheckoutPage() {
   const handlePaymentSuccess = (result: any) => {
     setPaymentResult(result)
     setActiveStep(2)
-    
+
     // Store result for confirmation page
     sessionStorage.setItem('paymentResult', JSON.stringify(result))
-    
+
+    // Redirect to confirmation page after showing success message
+    setTimeout(() => {
+      router.push(`/confirmation?payment_intent=${result.paymentIntentId}&tracking_number=${result.trackingNumber}`)
+    }, 3000)
+
     // Clear quote data
     sessionStorage.removeItem('selectedQuote')
     sessionStorage.removeItem('shipmentRequest')

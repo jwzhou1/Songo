@@ -138,7 +138,7 @@ export default function HomePage() {
                   Real-time multi-carrier quotes, GPS tracking, and secure payments.
                   Built with AWS cloud architecture for enterprise scalability.
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 3 }}>
                   <Button
                     variant="contained"
                     size="large"
@@ -172,6 +172,49 @@ export default function HomePage() {
                     startIcon={<TrackChangesIcon />}
                   >
                     Track Package
+                  </Button>
+                </Box>
+
+                {/* Login/Register Buttons */}
+                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                  <Button
+                    variant="text"
+                    size="medium"
+                    onClick={() => router.push('/login')}
+                    sx={{
+                      color: 'white',
+                      px: 3,
+                      py: 1,
+                      fontSize: '1rem',
+                      fontWeight: 500,
+                      '&:hover': {
+                        bgcolor: 'rgba(255,255,255,0.1)',
+                      },
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
+                    Sign In
+                  </Button>
+
+                  <Button
+                    variant="text"
+                    size="medium"
+                    onClick={() => router.push('/register')}
+                    sx={{
+                      color: 'white',
+                      px: 3,
+                      py: 1,
+                      fontSize: '1rem',
+                      fontWeight: 500,
+                      border: '1px solid rgba(255,255,255,0.3)',
+                      '&:hover': {
+                        bgcolor: 'rgba(255,255,255,0.1)',
+                        borderColor: 'rgba(255,255,255,0.5)'
+                      },
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
+                    Create Account
                   </Button>
                 </Box>
               </Grid>
