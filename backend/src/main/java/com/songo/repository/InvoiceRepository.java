@@ -1,6 +1,7 @@
 package com.songo.repository;
 
 import com.songo.model.Invoice;
+import com.songo.model.Shipment;
 import com.songo.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,13 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     // Find by user
     List<Invoice> findByUserOrderByCreatedAtDesc(User user);
     Page<Invoice> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
+
+    // Find by user ID
+    List<Invoice> findByUserIdOrderByCreatedAtDesc(Long userId);
+    Page<Invoice> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
+
+    // Find by shipment
+    Optional<Invoice> findByShipment(Shipment shipment);
     
     // Find by invoice status
     List<Invoice> findByInvoiceStatus(Invoice.InvoiceStatus invoiceStatus);
@@ -34,6 +42,15 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     // Find by user and status
     List<Invoice> findByUserAndInvoiceStatus(User user, Invoice.InvoiceStatus invoiceStatus);
     Page<Invoice> findByUserAndInvoiceStatus(User user, Invoice.InvoiceStatus invoiceStatus, Pageable pageable);
+
+    // Find by user ID and status
+    List<Invoice> findByUserIdAndInvoiceStatusOrderByCreatedAtDesc(Long userId, Invoice.InvoiceStatus invoiceStatus);
+
+    // Find overdue invoices by user ID
+    List<Invoice> findByUserIdAndInvoiceStatusAndDueDateBeforeOrderByDueDateAsc(Long userId, Invoice.InvoiceStatus invoiceStatus, LocalDateTime dueDate);
+
+    // Find invoice by number and user ID
+    Optional<Invoice> findByInvoiceNumberAndUserId(String invoiceNumber, Long userId);
     
     // Find invoices within date range
     @Query("SELECT i FROM Invoice i WHERE i.issueDate BETWEEN :startDate AND :endDate ORDER BY i.issueDate DESC")
@@ -97,4 +114,26 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
            "LOWER(i.billingEmail) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(i.invoiceNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     List<Invoice> searchInvoices(@Param("searchTerm") String searchTerm);
+
+    // Search invoices by criteria (for InvoiceService)
+    @Query("SELECT i FROM Invoice i WHERE " +
+           "(:userId IS NULL OR i.user.id = :userId) AND " +
+           "(:invoiceNumber IS NULL OR i.invoiceNumber LIKE %:invoiceNumber%) AND " +
+           "(:status IS NULL OR i.invoiceStatus = :status) AND " +
+           "(:fromDate IS NULL OR i.createdAt >= :fromDate) AND " +
+           "(:toDate IS NULL OR i.createdAt <= :toDate) " +
+           "ORDER BY i.createdAt DESC")
+    List<Invoice> searchInvoices(@Param("userId") Long userId,
+                                @Param("invoiceNumber") String invoiceNumber,
+                                @Param("status") Invoice.InvoiceStatus status,
+                                @Param("fromDate") LocalDateTime fromDate,
+                                @Param("toDate") LocalDateTime toDate);
+
+    // Find top N invoices by user ID ordered by creation date
+    @Query("SELECT i FROM Invoice i WHERE i.user.id = :userId ORDER BY i.createdAt DESC")
+    List<Invoice> findTopNByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId, Pageable pageable);
+
+    default List<Invoice> findTopNByUserIdOrderByCreatedAtDesc(Long userId, int limit) {
+        return findTopNByUserIdOrderByCreatedAtDesc(userId, Pageable.ofSize(limit));
+    }
 }

@@ -123,7 +123,7 @@ public class Shipment {
     
     // Enums
     public enum ShipmentStatus {
-        DRAFT, QUOTED, BOOKED, PICKED_UP, IN_TRANSIT, DELIVERED, CANCELLED, EXCEPTION
+        DRAFT, QUOTED, BOOKED, PENDING, PICKED_UP, IN_TRANSIT, DELIVERED, CANCELLED, EXCEPTION
     }
     
     public enum ShipmentType {
@@ -234,6 +234,14 @@ public class Shipment {
     
     public List<Package> getPackages() { return packages; }
     public void setPackages(List<Package> packages) { this.packages = packages; }
+
+    public LocalDateTime getDeliveredAt() { return deliveryDate != null ? deliveryDate.atStartOfDay() : null; }
+    public void setDeliveredAt(LocalDateTime deliveredAt) {
+        this.deliveryDate = deliveredAt != null ? deliveredAt.toLocalDate() : null;
+    }
+
+    public String getNotes() { return deliveryInstructions; }
+    public void setNotes(String notes) { this.deliveryInstructions = notes; }
     
     // Utility methods
     public boolean isDelivered() {

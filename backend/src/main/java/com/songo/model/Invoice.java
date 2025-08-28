@@ -113,7 +113,7 @@ public class Invoice {
     
     // Enums
     public enum InvoiceStatus {
-        DRAFT, SENT, VIEWED, PAID, OVERDUE, CANCELLED, REFUNDED
+        DRAFT, SENT, VIEWED, PAID, PENDING, OVERDUE, CANCELLED, REFUNDED
     }
     
     // Constructors
@@ -191,6 +191,32 @@ public class Invoice {
     
     public InvoiceStatus getInvoiceStatus() { return invoiceStatus; }
     public void setInvoiceStatus(InvoiceStatus invoiceStatus) { this.invoiceStatus = invoiceStatus; }
+
+    // Additional getters/setters for InvoiceService compatibility
+    public InvoiceStatus getStatus() { return invoiceStatus; }
+    public void setStatus(InvoiceStatus status) { this.invoiceStatus = status; }
+
+    public BigDecimal getAmount() { return subtotal; }
+    public void setAmount(BigDecimal amount) { this.subtotal = amount; }
+
+    public LocalDateTime getPaidAt() { return paidDate; }
+    public void setPaidAt(LocalDateTime paidAt) { this.paidDate = paidAt; }
+
+    public String getPaymentMethod() {
+        // This would typically come from associated Payment entity
+        return "N/A";
+    }
+    public void setPaymentMethod(String paymentMethod) {
+        // This would typically be set on associated Payment entity
+    }
+
+    public String getTransactionId() {
+        // This would typically come from associated Payment entity
+        return "N/A";
+    }
+    public void setTransactionId(String transactionId) {
+        // This would typically be set on associated Payment entity
+    }
     
     public String getBillingName() { return billingName; }
     public void setBillingName(String billingName) { this.billingName = billingName; }

@@ -66,37 +66,76 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
-        Map<String, String> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
 
-        // Check if email already exists
-        if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            response.put("message", "Email is already in use!");
-            return ResponseEntity.badRequest().body(response);
+        try {
+            // Check if email already exists
+            Optional<User> existingUser = userRepository.findByEmail(registerRequest.getEmail());
+            if (existingUser.isPresent()) {
+                User user = existingUser.get();
+
+                // If user exists but is inactive, we can reactivate
+                if (user.getStatus() == User.Status.INACTIVE) {
+                    user.setStatus(User.Status.ACTIVE);
+                    user.setEmailVerified(true);
+                    user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+
+                    // Update user information if provided
+                    if (registerRequest.getFirstName() != null && !registerRequest.getFirstName().trim().isEmpty()) {
+                        user.setFirstName(registerRequest.getFirstName());
+                    }
+                    if (registerRequest.getLastName() != null && !registerRequest.getLastName().trim().isEmpty()) {
+                        user.setLastName(registerRequest.getLastName());
+                    }
+                    if (registerRequest.getPhone() != null && !registerRequest.getPhone().trim().isEmpty()) {
+                        user.setPhone(registerRequest.getPhone());
+                    }
+
+                    User savedUser = userRepository.save(user);
+                    String jwt = jwtUtil.generateToken(savedUser.getEmail(), savedUser.getRole().name(), savedUser.getId());
+
+                    response.put("message", "Account reactivated successfully!");
+                    response.put("user", savedUser);
+                    response.put("token", jwt);
+                    return ResponseEntity.ok(response);
+                } else {
+                    response.put("message", "Email is already registered. Please use login instead.");
+                    response.put("error", "EMAIL_EXISTS");
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+                }
+            }
+
+            // Create new user
+            User user = new User(
+                registerRequest.getEmail(),
+                passwordEncoder.encode(registerRequest.getPassword()),
+                registerRequest.getFirstName(),
+                registerRequest.getLastName()
+            );
+
+            if (registerRequest.getPhone() != null && !registerRequest.getPhone().trim().isEmpty()) {
+                user.setPhone(registerRequest.getPhone());
+            }
+
+            user.setRole(User.Role.CUSTOMER);
+            user.setStatus(User.Status.ACTIVE);
+            user.setEmailVerified(true); // For now, auto-verify emails
+
+            User savedUser = userRepository.save(user);
+
+            // Generate JWT token for immediate login
+            String jwt = jwtUtil.generateToken(savedUser.getEmail(), savedUser.getRole().name(), savedUser.getId());
+
+            response.put("message", "User registered successfully!");
+            response.put("user", savedUser);
+            response.put("token", jwt);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.put("message", "Registration failed: " + e.getMessage());
+            response.put("error", "REGISTRATION_FAILED");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
-        // Create new user
-        User user = new User(
-            registerRequest.getEmail(),
-            passwordEncoder.encode(registerRequest.getPassword()),
-            registerRequest.getFirstName(),
-            registerRequest.getLastName()
-        );
-
-        if (registerRequest.getPhone() != null && !registerRequest.getPhone().trim().isEmpty()) {
-            user.setPhone(registerRequest.getPhone());
-        }
-
-        user.setRole(User.Role.CUSTOMER);
-        user.setStatus(User.Status.ACTIVE);
-        user.setEmailVerified(true); // For now, auto-verify emails
-
-        User savedUser = userRepository.save(user);
-
-        // Generate JWT token for immediate login
-        String jwt = jwtUtil.generateToken(savedUser.getEmail(), savedUser.getRole().name(), savedUser.getId());
-
-        response.put("message", "User registered successfully!");
-        return ResponseEntity.ok(new JwtResponse(jwt, savedUser));
     }
 
     @PostMapping("/logout")

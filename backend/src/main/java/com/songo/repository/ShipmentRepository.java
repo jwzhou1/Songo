@@ -25,6 +25,26 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
      * Find shipment by shipment number
      */
     Optional<Shipment> findByShipmentNumber(String shipmentNumber);
+
+    /**
+     * Find shipments by status not in list
+     */
+    List<Shipment> findByStatusNotIn(List<Shipment.ShipmentStatus> statuses);
+
+    /**
+     * Count shipments by user ID
+     */
+    long countByUserId(Long userId);
+
+    /**
+     * Count shipments by user ID and status
+     */
+    long countByUserIdAndStatus(Long userId, Shipment.ShipmentStatus status);
+
+    /**
+     * Find shipments by user (for TrackingService compatibility)
+     */
+    List<Shipment> findByUserOrderByCreatedAtDesc(User user);
     
     /**
      * Find shipment by tracking number
@@ -45,11 +65,21 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
      * Find shipments by user ID
      */
     List<Shipment> findByUserId(Long userId);
-    
+
+    /**
+     * Find shipments by user ID ordered by creation date
+     */
+    List<Shipment> findByUserIdOrderByCreatedAtDesc(Long userId);
+
     /**
      * Find shipments by user ID with pagination
      */
     Page<Shipment> findByUserId(Long userId, Pageable pageable);
+
+    /**
+     * Find shipments by user ID with pagination ordered by creation date
+     */
+    Page<Shipment> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
     
     /**
      * Find shipments by status
@@ -65,6 +95,21 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
      * Find shipments by user ID and status
      */
     List<Shipment> findByUserIdAndStatus(Long userId, Shipment.ShipmentStatus status);
+
+    /**
+     * Find shipments by user ID and status ordered by creation date
+     */
+    List<Shipment> findByUserIdAndStatusOrderByCreatedAtDesc(Long userId, Shipment.ShipmentStatus status);
+
+    /**
+     * Find shipments by user ID and status not in list
+     */
+    List<Shipment> findByUserIdAndStatusNotInOrderByCreatedAtDesc(Long userId, List<Shipment.ShipmentStatus> statuses);
+
+    /**
+     * Find shipment by tracking number and user ID
+     */
+    Optional<Shipment> findByTrackingNumberAndUserId(String trackingNumber, Long userId);
     
     /**
      * Find shipments by carrier
@@ -184,4 +229,40 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
      */
     @Query("SELECT s.status, COUNT(s) FROM Shipment s WHERE s.user = :user GROUP BY s.status")
     List<Object[]> getShipmentStatsByUser(@Param("user") User user);
+
+    /**
+     * Search shipments by criteria (for ShippingHistoryService)
+     */
+    @Query("SELECT s FROM Shipment s WHERE " +
+           "(:userId IS NULL OR s.user.id = :userId) AND " +
+           "(:trackingNumber IS NULL OR s.trackingNumber LIKE %:trackingNumber%) AND " +
+           "(:status IS NULL OR s.status = :status) AND " +
+           "(:fromDate IS NULL OR s.createdAt >= :fromDate) AND " +
+           "(:toDate IS NULL OR s.createdAt <= :toDate) " +
+           "ORDER BY s.createdAt DESC")
+    List<Shipment> searchShipments(@Param("userId") Long userId,
+                                  @Param("trackingNumber") String trackingNumber,
+                                  @Param("status") Shipment.ShipmentStatus status,
+                                  @Param("fromDate") LocalDateTime fromDate,
+                                  @Param("toDate") LocalDateTime toDate);
+
+    /**
+     * Find top N shipments by user ID ordered by creation date
+     */
+    @Query("SELECT s FROM Shipment s WHERE s.user.id = :userId ORDER BY s.createdAt DESC")
+    List<Shipment> findTopNByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId, Pageable pageable);
+
+    default List<Shipment> findTopNByUserIdOrderByCreatedAtDesc(Long userId, int limit) {
+        return findTopNByUserIdOrderByCreatedAtDesc(userId, Pageable.ofSize(limit));
+    }
+
+    /**
+     * Search shipments by term (for ShipmentService)
+     */
+    @Query("SELECT s FROM Shipment s WHERE " +
+           "LOWER(s.shipmentNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(s.trackingNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+           "LOWER(s.carrierReference) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+           "ORDER BY s.createdAt DESC")
+    List<Shipment> searchShipments(@Param("searchTerm") String searchTerm);
 }

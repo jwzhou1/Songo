@@ -1,0 +1,74 @@
+version: '3.8'
+
+# Development override for docker-compose.yml
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  # MySQL Database - Development settings
+  mysql:
+    environment:
+      MYSQL_ROOT_PASSWORD: devpassword
+      MYSQL_DATABASE: songo_dev_db
+      MYSQL_USER: songo_dev_user
+      MYSQL_PASSWORD: devpassword
+    ports:
+      - "3307:3306"  # Different port to avoid conflicts
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./database/dev-data.sql:/docker-entrypoint-initdb.d/dev-data.sql:ro
+
+  # Redis Cache - Development settings
+  redis:
+    ports:
+      - "6380:6379"  # Different port to avoid conflicts
+
+  # Spring Boot Backend - Development settings
+  backend:
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DATABASE_URL: jdbc:mysql://mysql:3306/songo_dev_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DATABASE_USERNAME: songo_dev_user
+      DATABASE_PASSWORD: devpassword
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: devSecretKeyForJWTTokenGeneration2024!
+      STRIPE_SECRET_KEY: sk_test_dev_stripe_secret_key
+      STRIPE_PUBLISHABLE_KEY: pk_test_dev_stripe_publishable_key
+      LOGGING_LEVEL_COM_SONGO: DEBUG
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: DEBUG
+    ports:
+      - "8080:8080"
+      - "5005:5005"  # Debug port
+    volumes:
+      # Mount source code for hot reload (if using Spring Boot DevTools)
+      - ./backend/src:/app/src:ro
+      - ./backend/target:/app/target
+    command: ["sh", "-c", "java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 $JAVA_OPTS -jar app.jar"]
+
+  # Angular Frontend - Development settings
+  frontend:
+    environment:
+      API_URL: http://localhost:8080/api
+      NODE_ENV: development
+    ports:
+      - "4200:80"  # Different port for development
+    volumes:
+      # Mount source code for development
+      - ./angular-frontend/src:/app/src:ro
+      - ./angular-frontend/dist:/usr/share/nginx/html
+
+  # phpMyAdmin - Development settings
+  phpmyadmin:
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: songo_dev_user
+      PMA_PASSWORD: devpassword
+      MYSQL_ROOT_PASSWORD: devpassword
+    ports:
+      - "8082:80"  # Different port for development
+
+volumes:
+  mysql_dev_data:
+    driver: local

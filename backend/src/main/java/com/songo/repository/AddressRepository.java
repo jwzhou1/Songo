@@ -25,6 +25,11 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
      * Find addresses by user ID
      */
     List<Address> findByUserId(Long userId);
+
+    /**
+     * Find addresses by user ID ordered by default status
+     */
+    List<Address> findByUserIdOrderByIsDefaultDesc(Long userId);
     
     /**
      * Find addresses by user and type
