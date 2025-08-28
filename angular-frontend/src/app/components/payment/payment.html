@@ -94,8 +94,20 @@
           <mat-card class="card-details">
             <mat-card-header>
               <mat-card-title>Card Details</mat-card-title>
+              <mat-card-subtitle>Demo Cards Available - Click to use:</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
+              <!-- Demo Card Options -->
+              <div class="demo-cards" style="margin-bottom: 20px;">
+                <div class="demo-card-buttons" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <button type="button" mat-stroked-button
+                          *ngFor="let card of demoCards; let i = index"
+                          (click)="useDemoCard(i)"
+                          style="font-size: 12px; padding: 4px 8px;">
+                    {{card.name}}: {{card.number.slice(0,4)}}****{{card.number.slice(-4)}}
+                  </button>
+                </div>
+              </div>
               <div class="form-row">
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>Card Number</mat-label>

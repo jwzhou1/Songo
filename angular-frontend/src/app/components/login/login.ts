@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-login',
@@ -33,7 +34,8 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -49,30 +51,19 @@ export class LoginComponent {
 
       const { email, password, rememberMe } = this.loginForm.value;
 
-      // Simulate API call
-      setTimeout(() => {
-        // Demo login - accept any email/password combination
-        if (email && password) {
-          // Store demo user data
-          const userData = {
-            id: 1,
-            email: email,
-            firstName: 'Demo',
-            lastName: 'User',
-            token: 'demo-jwt-token'
-          };
-
-          localStorage.setItem('user', JSON.stringify(userData));
-          localStorage.setItem('token', userData.token);
-
+      // Call real API
+      this.authService.login({ email, password }).subscribe({
+        next: (response) => {
           // Redirect to dashboard
           this.router.navigate(['/dashboard']);
-        } else {
-          this.errorMessage = 'Invalid email or password';
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Login error:', error);
+          this.errorMessage = error.error?.message || 'Invalid email or password';
+          this.loading = false;
         }
-
-        this.loading = false;
-      }, 1500);
+      });
     }
   }
 }

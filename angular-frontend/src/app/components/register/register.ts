@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-register',
@@ -35,7 +36,8 @@ export class RegisterComponent {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.registerForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2)]],
@@ -69,18 +71,33 @@ export class RegisterComponent {
 
       const formData = this.registerForm.value;
 
-      // Simulate API call
-      setTimeout(() => {
-        // Demo registration - always succeed
-        this.successMessage = 'Account created successfully! Redirecting to login...';
+      // Prepare registration request
+      const registerRequest = {
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone
+      };
 
-        // Redirect to login after 2 seconds
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000);
+      // Call real API
+      this.authService.register(registerRequest).subscribe({
+        next: (response) => {
+          this.successMessage = response.message || 'Account created successfully! Redirecting to dashboard...';
 
-        this.loading = false;
-      }, 1500);
+          // Redirect to dashboard after 2 seconds
+          setTimeout(() => {
+            this.router.navigate(['/dashboard']);
+          }, 2000);
+
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Registration error:', error);
+          this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+          this.loading = false;
+        }
+      });
     } else {
       // Mark all fields as touched to show validation errors
       Object.keys(this.registerForm.controls).forEach(key => {
